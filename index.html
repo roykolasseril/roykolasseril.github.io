@@ -1,0 +1,1160 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ROYZ PrintStudio - Modern Print Editor</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- PDF.js for Client-side PDF Extraction -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    </script>
+
+    <!-- html2canvas for Download feature -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <!-- jsPDF for PDF Download feature -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        // Material 3 Expressive Tokens
+                        m3: {
+                            primary: '#0b57d0',
+                            onPrimary: '#ffffff',
+                            primaryContainer: '#d3e3fd',
+                            onPrimaryContainer: '#041e49',
+                            secondary: '#00639b',
+                            onSecondary: '#ffffff',
+                            secondaryContainer: '#cce5ff',
+                            onSecondaryContainer: '#001d35',
+                            tertiary: '#146c2e',
+                            onTertiary: '#ffffff',
+                            tertiaryContainer: '#c4eebb',
+                            onTertiaryContainer: '#002106',
+                            surface: '#fdfbff',
+                            surfaceContainer: '#f0f4f9',
+                            surfaceContainerHigh: '#e1e3e8',
+                        }
+                    },
+                    boxShadow: {
+                        'm3-elevation-1': '0px 1px 3px 1px rgba(0, 0, 0, 0.15), 0px 1px 2px 0px rgba(0, 0, 0, 0.30)',
+                        'm3-elevation-2': '0px 2px 6px 2px rgba(0, 0, 0, 0.15), 0px 1px 2px 0px rgba(0, 0, 0, 0.30)',
+                        'm3-elevation-3': '0px 1px 3px 0px rgba(0, 0, 0, 0.30), 0px 4px 8px 3px rgba(0, 0, 0, 0.15)',
+                        'm3-elevation-4': '0px 2px 3px 0px rgba(0, 0, 0, 0.30), 0px 6px 10px 4px rgba(0, 0, 0, 0.15)',
+                        'm3-elevation-5': '0px 4px 4px 0px rgba(0, 0, 0, 0.30), 0px 8px 12px 6px rgba(0, 0, 0, 0.15)',
+                        'soft': '0 8px 32px -4px rgba(0, 0, 0, 0.04)',
+                        'soft-hover': '0 12px 48px -4px rgba(11, 87, 208, 0.12)',
+                    },
+                    padding: {
+                        'safe': 'env(safe-area-inset-bottom)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Premium Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 20px; border: 2px solid #f0f4f9; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* Native Color Input Styling Reset */
+        input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+        input[type="color"]::-webkit-color-swatch { border: none; border-radius: 50%; }
+
+        /* Draggable visual guide styling */
+        .guide-active {
+            border: 2px dashed #0b57d0 !important;
+            background-color: rgba(211, 227, 253, 0.5) !important;
+            backdrop-filter: blur(2px);
+            box-shadow: 0 4px 12px rgba(11, 87, 208, 0.15) !important;
+        }
+        .guide-active:hover {
+            background-color: rgba(211, 227, 253, 0.8) !important;
+            border-color: #0b57d0 !important;
+            transform: scale(1.02);
+        }
+
+        /* Prevent overscroll bounce on mobile */
+        body { overscroll-behavior-y: none; }
+
+        /* M3 Dot Background Pattern for SaaS feel */
+        .dot-pattern {
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        /* Animated gradient text */
+        .text-gradient {
+            background: linear-gradient(135deg, #0b57d0, #146c2e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Bottom Nav Active State Logic */
+        .nav-btn.text-m3-primary .nav-pill {
+            background-color: #d3e3fd; /* m3-primaryContainer */
+            transform: scale(1);
+            opacity: 1;
+        }
+        .nav-btn.text-slate-400 .nav-pill {
+            transform: scale(0.5);
+            opacity: 0;
+        }
+
+        /* CRITICAL PRINT CSS */
+        @media print {
+            @page {
+                size: A4;
+                margin: 0;
+            }
+
+            html, body {
+                width: 210mm;
+                height: 297mm;
+                margin: 0 !important;
+                padding: 0 !important;
+                background: white !important;
+                overflow: hidden !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            /* Hide UI elements */
+            #top-bar,
+            #bottom-nav,
+            #view-data,
+            #view-settings,
+            .hide-on-print {
+                display: none !important;
+            }
+
+            /* Force preview container to behave like a real page */
+            #view-preview {
+                display: block !important;
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 210mm !important;
+                height: 297mm !important;
+                background: white !important;
+            }
+
+            /* Remove wrapper spacing */
+            #canvas-wrapper {
+                margin: 0 !important;
+                padding: 0 !important;
+                display: block !important;
+            }
+
+            /* Actual printable A4 canvas */
+            #print-container, 
+            #print-container * {
+                box-shadow: none !important;
+                text-shadow: none !important;
+                filter: none !important;
+            }
+
+            #print-container {
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 210mm !important;
+                height: 297mm !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                border: none !important;
+                transform: none !important;
+                background-image: inherit !important;
+                background-size: 100% 100% !important;
+                background-repeat: no-repeat !important;
+                background-position: center !important;
+            }
+        }
+    </style>
+</head>
+<body class="flex flex-col h-[100dvh] bg-m3-surfaceContainer font-sans antialiased text-slate-800 overflow-hidden">
+
+    <!-- TOP APP BAR (Material 3 Expressive) -->
+    <header id="top-bar" class="h-[76px] flex-shrink-0 bg-white/80 backdrop-blur-xl border-b border-slate-200/50 flex items-center justify-between px-4 md:px-8 z-40 relative">
+        <div class="flex items-center gap-3">
+            <div class="bg-gradient-to-br from-m3-primary to-blue-400 p-2.5 rounded-[16px] shadow-m3-elevation-2 text-white">
+                <i data-lucide="printer" class="w-6 h-6"></i>
+            </div>
+            <h1 class="text-[22px] font-black tracking-tight text-slate-800">
+                ROYZ<span class="text-m3-primary font-bold">Print</span><span class="font-medium text-slate-500">Studio</span>
+            </h1>
+        </div>
+        <div class="flex items-center gap-2 md:gap-4">
+            <button id="btn-reset" class="p-2.5 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-full transition-all active:scale-90" title="Reset All Data">
+                <i data-lucide="rotate-ccw" class="w-6 h-6"></i>
+            </button>
+            <div class="hidden md:flex items-center bg-m3-tertiaryContainer rounded-full overflow-hidden shadow-sm border border-m3-tertiaryContainer">
+                <button id="btn-download-png" class="flex items-center gap-2 text-m3-onTertiaryContainer px-5 py-2.5 font-bold text-sm hover:bg-white/40 transition-colors active:scale-95 border-r border-m3-onTertiaryContainer/10" title="Download as PNG">
+                    <i data-lucide="image" class="w-4 h-4"></i> PNG
+                </button>
+                <button id="btn-download-pdf" class="flex items-center gap-2 text-m3-onTertiaryContainer px-5 py-2.5 font-bold text-sm hover:bg-white/40 transition-colors active:scale-95" title="Download as PDF">
+                    <i data-lucide="file-down" class="w-4 h-4"></i> PDF
+                </button>
+            </div>
+            <button id="btn-print" class="flex items-center gap-2 bg-m3-primary text-white px-6 py-2.5 rounded-full font-bold text-[15px] shadow-m3-elevation-2 hover:shadow-m3-elevation-3 hover:bg-blue-700 transition-all active:scale-95">
+                <i data-lucide="printer" class="w-4 h-4"></i>
+                <span class="hidden md:inline">Print Document</span>
+                <span class="md:hidden">Print</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT AREA (Tab Views) -->
+    <main class="flex-1 relative overflow-hidden">
+        
+        <!-- 1. DATA TAB (SaaS Grid & Massive Typography) -->
+        <div id="view-data" class="absolute inset-0 overflow-y-auto p-4 md:p-8 lg:p-10 pb-32 hidden">
+            <div class="max-w-[1400px] mx-auto">
+                
+                <!-- Hero Section / PDF Upload -->
+                <div class="mb-10 bg-white rounded-[32px] p-6 md:p-10 shadow-soft border border-slate-100 flex flex-col xl:flex-row xl:items-center justify-between gap-8 relative overflow-hidden group">
+                    <!-- Decorative Background -->
+                    <div class="absolute -right-20 -top-20 w-64 h-64 bg-m3-primaryContainer rounded-full blur-3xl opacity-40 group-hover:opacity-60 transition-opacity"></div>
+                    <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-m3-tertiaryContainer rounded-full blur-3xl opacity-40 group-hover:opacity-60 transition-opacity"></div>
+                    
+                    <div class="relative z-10 flex-1">
+                        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-m3-primaryContainer text-m3-primary text-xs font-bold tracking-wide uppercase mb-4">
+                            <i data-lucide="zap" class="w-4 h-4 fill-current"></i> Smart Workflow
+                        </div>
+                        <h2 class="text-4xl md:text-5xl font-black text-slate-800 tracking-tight leading-tight mb-3">
+                            Populate fields <br class="hidden md:block"/> <span class="text-gradient">instantly.</span>
+                        </h2>
+                        <p class="text-slate-500 text-lg md:text-xl font-medium max-w-xl">
+                            Upload a Policy PDF to automatically extract and populate all necessary data fields below.
+                        </p>
+                    </div>
+
+                    <div class="relative z-10">
+                        <label class="flex items-center justify-center gap-3 bg-m3-primary hover:bg-blue-700 text-white px-8 py-5 rounded-[24px] cursor-pointer shadow-m3-elevation-3 hover:shadow-m3-elevation-4 transition-all transform hover:-translate-y-1 active:scale-95 font-bold text-lg md:text-xl w-full xl:w-auto">
+                            <div class="bg-white/20 p-2 rounded-full">
+                                <i data-lucide="file-up" class="w-6 h-6"></i>
+                            </div>
+                            <span id="pdf-upload-text">Auto-Fill from PDF</span>
+                            <input type="file" accept=".pdf" id="pdf-upload" class="hidden" />
+                        </label>
+                    </div>
+                </div>
+                
+                <div id="pdf-feedback" class="hidden mb-8 p-6 rounded-[24px] text-lg font-bold flex items-center gap-3 shadow-sm border">
+                    <i id="pdf-feedback-icon" class="w-7 h-7"></i>
+                    <span id="pdf-feedback-text"></span>
+                </div>
+
+                <!-- Structured Divider -->
+                <div class="flex items-center gap-4 mb-8">
+                    <h3 class="text-2xl font-black tracking-tight text-slate-800">Document Data</h3>
+                    <div class="h-px bg-slate-200 flex-1"></div>
+                </div>
+
+                <!-- Data Inputs Grid (Injected via JS) -->
+                <div id="data-fields-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <!-- Data inputs injected via JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. PREVIEW TAB (Canvas) -->
+        <div id="view-preview" class="absolute inset-0 overflow-auto bg-m3-surfaceContainer dot-pattern p-4 md:p-12 pb-32 hidden flex justify-center items-start">
+            
+            <!-- Floating Controls (M3 Expressive) -->
+            <div class="fixed top-24 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-xl px-6 py-3 rounded-full border border-slate-200 shadow-m3-elevation-3 flex items-center gap-6 text-slate-600 font-bold text-sm z-20 pointer-events-none hide-on-print hidden md:flex">
+                <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                    <span>Live Preview</span>
+                </div>
+                <div class="w-px h-5 bg-slate-200"></div>
+                <span class="text-slate-400">A4 • 210 × 297 mm</span>
+            </div>
+
+            <!-- Mobile Action Buttons (Visible only on Preview tab on Mobile) -->
+            <div class="fixed bottom-24 right-4 flex flex-col gap-3 md:hidden z-20 hide-on-print">
+                <button id="btn-download-png-mobile" class="w-14 h-14 bg-m3-tertiaryContainer text-m3-onTertiaryContainer rounded-[20px] shadow-m3-elevation-3 flex items-center justify-center active:scale-95 transition-transform" onclick="document.getElementById('btn-download-png').click()">
+                    <i data-lucide="image" class="w-6 h-6"></i>
+                </button>
+                <button id="btn-download-pdf-mobile" class="w-14 h-14 bg-m3-primaryContainer text-m3-onPrimaryContainer rounded-[20px] shadow-m3-elevation-3 flex items-center justify-center active:scale-95 transition-transform" onclick="document.getElementById('btn-download-pdf').click()">
+                    <i data-lucide="file-down" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <div id="canvas-wrapper" class="relative group/canvas mt-8 mb-24 transition-transform duration-300">
+                <!-- Actual A4 Canvas -->
+                <div
+                    id="print-container"
+                    class="bg-white relative z-10 overflow-hidden shadow-[0_24px_80px_-12px_rgba(0,0,0,0.15)] transition-all duration-300 ring-1 ring-slate-900/5"
+                    style="width: 210mm; height: 297mm; min-width: 210mm; min-height: 297mm; background-size: 100% 100%; background-repeat: no-repeat; background-position: center;"
+                >
+                    <!-- Draggable elements injected here via JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. SETTINGS TAB (Material 3 Expressive Panels) -->
+        <div id="view-settings" class="absolute inset-0 overflow-y-auto p-4 md:p-8 lg:p-10 pb-32 hidden">
+            <div class="max-w-[1400px] mx-auto">
+                
+                <!-- Hero Header -->
+                <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                    <div>
+                        <h2 class="text-4xl md:text-5xl font-black text-slate-800 tracking-tight leading-tight mb-3">
+                            Perfect <span class="text-m3-primary">Alignment.</span>
+                        </h2>
+                        <p class="text-slate-500 text-lg font-medium">Fine-tune coordinates, typography, and visual bounds.</p>
+                    </div>
+                </div>
+
+                <!-- Global Controls (Expressive Cards) -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
+                    
+                    <!-- Canvas Guide Upload -->
+                    <div class="bg-gradient-to-br from-[#fff8e1] to-[#ffecb3] rounded-[32px] p-8 shadow-sm border border-amber-200/50 relative overflow-hidden group">
+                        <div class="absolute -right-10 -top-10 w-48 h-48 bg-amber-400 rounded-full blur-3xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
+                        <div class="flex flex-col h-full justify-between relative z-10">
+                            <div class="mb-6">
+                                <div class="w-14 h-14 bg-amber-100 text-amber-700 rounded-[20px] flex items-center justify-center mb-4">
+                                    <i data-lucide="scan-line" class="w-7 h-7 stroke-[2.5px]"></i>
+                                </div>
+                                <h3 class="text-2xl font-black text-amber-900 mb-2 tracking-tight">Template Guide</h3>
+                                <p class="text-amber-800/80 font-medium text-lg leading-snug">Upload a scanned form background to visually perfectly position your text fields.</p>
+                            </div>
+                            <label class="inline-flex items-center justify-center px-6 py-4 bg-amber-500 hover:bg-amber-600 text-white text-[16px] font-bold rounded-[20px] cursor-pointer shadow-m3-elevation-2 hover:shadow-m3-elevation-3 transition-all transform hover:-translate-y-1 w-full sm:w-max">
+                                <i data-lucide="image-plus" class="w-5 h-5 mr-2"></i>
+                                Upload Scan
+                                <input type="file" accept="image/*" id="bg-upload" class="hidden" />
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Guides Toggle -->
+                    <div class="bg-white rounded-[32px] p-8 shadow-soft border border-slate-100 flex flex-col justify-center relative overflow-hidden">
+                        <div class="flex items-start justify-between mb-6">
+                            <div>
+                                <div class="w-14 h-14 bg-m3-primaryContainer text-m3-primary rounded-[20px] flex items-center justify-center mb-4">
+                                    <i data-lucide="focus" class="w-7 h-7 stroke-[2.5px]"></i>
+                                </div>
+                                <h3 class="text-2xl font-black text-slate-800 mb-2 tracking-tight">Interactive Bounds</h3>
+                                <p class="text-slate-500 font-medium text-lg leading-snug">Reveal border outlines in preview mode to easily grab and reposition elements.</p>
+                            </div>
+                        </div>
+                        
+                        <label class="flex items-center justify-between p-4 bg-slate-50 rounded-[24px] border border-slate-200/60 cursor-pointer hover:bg-slate-100 transition-colors w-full">
+                            <div class="flex items-center gap-3">
+                                <div id="guide-icon-container" class="p-2 rounded-full bg-white shadow-sm text-slate-400 transition-colors">
+                                    <i data-lucide="eye" id="guide-icon-on" class="w-5 h-5 text-m3-primary hidden"></i>
+                                    <i data-lucide="eye-off" id="guide-icon-off" class="w-5 h-5"></i>
+                                </div>
+                                <span class="text-[17px] font-bold text-slate-700 select-none">Show Outlines</span>
+                            </div>
+                            <!-- M3 Switch -->
+                            <div id="guide-toggle-bg" class="w-14 h-8 rounded-full transition-colors duration-300 relative flex items-center bg-slate-300 p-1">
+                                <div id="guide-toggle-dot" class="w-6 h-6 rounded-full bg-white shadow-sm transform transition-transform duration-300 translate-x-0"></div>
+                            </div>
+                            <input type="checkbox" id="show-outlines" class="hidden" />
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Structured Divider -->
+                <div class="flex items-center gap-4 mb-8">
+                    <h3 class="text-2xl font-black tracking-tight text-slate-800">Element Properties</h3>
+                    <div class="h-px bg-slate-200 flex-1"></div>
+                </div>
+
+                <!-- Per-Field Settings injected via JS -->
+                <div id="settings-fields-container" class="grid grid-cols-1 xl:grid-cols-2 gap-6"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- BOTTOM NAVIGATION (M3 Pill Style) -->
+    <nav id="bottom-nav" class="fixed bottom-0 left-0 w-full h-[88px] bg-white border-t border-slate-200/80 flex justify-center items-center px-2 shadow-[0_-10px_40px_rgba(0,0,0,0.05)] z-40 pb-safe">
+        <div class="flex items-center justify-around w-full max-w-md">
+            
+            <button onclick="switchTab('data')" id="nav-data" class="nav-btn flex flex-col items-center justify-center w-24 h-16 text-m3-primary transition-colors relative group">
+                <div class="nav-pill absolute inset-0 bg-m3-primaryContainer rounded-full transition-all duration-300 origin-center"></div>
+                <div class="relative z-10 flex flex-col items-center mt-1">
+                    <i data-lucide="file-text" class="w-6 h-6 mb-1 transition-transform group-active:scale-90"></i>
+                    <span class="text-[12px] font-bold tracking-wide">Data</span>
+                </div>
+            </button>
+            
+            <button onclick="switchTab('preview')" id="nav-preview" class="nav-btn flex flex-col items-center justify-center w-24 h-16 text-slate-400 transition-colors relative group">
+                <div class="nav-pill absolute inset-0 bg-m3-primaryContainer rounded-full transition-all duration-300 origin-center scale-50 opacity-0"></div>
+                <div class="relative z-10 flex flex-col items-center mt-1">
+                    <i data-lucide="layout-template" class="w-6 h-6 mb-1 transition-transform group-active:scale-90"></i>
+                    <span class="text-[12px] font-bold tracking-wide">Preview</span>
+                </div>
+            </button>
+
+            <button onclick="switchTab('settings')" id="nav-settings" class="nav-btn flex flex-col items-center justify-center w-24 h-16 text-slate-400 transition-colors relative group">
+                <div class="nav-pill absolute inset-0 bg-m3-primaryContainer rounded-full transition-all duration-300 origin-center scale-50 opacity-0"></div>
+                <div class="relative z-10 flex flex-col items-center mt-1">
+                    <i data-lucide="sliders" class="w-6 h-6 mb-1 transition-transform group-active:scale-90"></i>
+                    <span class="text-[12px] font-bold tracking-wide">Settings</span>
+                </div>
+            </button>
+
+        </div>
+    </nav>
+
+    <script>
+        // --- State Management ---
+        const INITIAL_DATA = {
+            amount: '₹ 1,340./-',
+            vehicleNo: 'KL-38-D-4478',
+            expiryDate: 'Expiry Date\n03/03/2027',
+            name: 'Mr.RENJITHA SHYMON,',
+            address1: 'KADAMATTU HOUSE,',
+            address2: 'CHEENIKUZHY P.O,\nTHODUPUZHA,IDUKKI,',
+            statePin: 'KERALA.PΙΝ. 685595.',
+            mobile: 'MOB: 96058 58986',
+            agentTitle: 'INSURANCE ADVISOR\nവാഹന ഇൻഷുറൻസ്',
+            agentDetails: 'ROY KOLASSERIL CHEENIKUZHY\nMob:9446941337 Res:9496073137',
+            toText: 'To'
+        };
+
+        const INITIAL_STYLES = {
+            amount: { left: 70.25, top: 7.99, fontSize: 23, fontWeight: 'normal', angle: 45, color: '#006666', hasBorder: false, textAlign: 'center' },
+            vehicleNo: { left: 68.40, top: 39.78, fontSize: 22, fontWeight: 'bold', angle: 90, color: '#006666', hasBorder: false, textAlign: 'center' },
+            expiryDate: { left: 70, top: 66.84, fontSize: 20, fontWeight: 'normal', angle: 90, color: '#006666', hasBorder: false, textAlign: 'center' },
+            toText: { left: 44.94, top: 62.63, fontSize: 20, fontWeight: 'normal', angle: 90, color: '#006666', hasBorder: false, textAlign: 'center' },
+            name: { left: 41.72, top: 64.00, fontSize: 16, fontWeight: 'normal', angle: 90, color: '#006666', hasBorder: false, textAlign: 'left' },
+            address1: { left: 39.49, top: 64.00, fontSize: 16, fontWeight: 'normal', angle: 90, color: '#006666', hasBorder: false, textAlign: 'left' },
+            address2: { left: 35.61, top: 64.00, fontSize: 16, fontWeight: 'normal', angle: 90, color: '#006666', hasBorder: false, textAlign: 'left' },
+            statePin: { left: 31.87, top: 64.00, fontSize: 16, fontWeight: 'normal', angle: 90, color: '#006666', hasBorder: false, textAlign: 'left' },
+            mobile: { left: 29.76, top: 64.00, fontSize: 16, fontWeight: 'bold', angle: 90, color: '#330033', hasBorder: false, textAlign: 'left' },
+            agentTitle: { left: 65.65, top: 11.05, fontSize: 14, fontWeight: 'bold', angle: 45, color: '#0000ff', hasBorder: false, textAlign: 'center' },
+            agentDetails: { left: 62.17, top: 13.20, fontSize: 14, fontWeight: 'bold', angle: 45, color: '#0000ff', hasBorder: false, textAlign: 'center' },
+        };
+
+        const FIELD_CONFIGS = [
+            { label: 'Amount Valid', key: 'amount' },
+            { label: 'Vehicle Identity', key: 'vehicleNo' },
+            { label: 'Validity Period', key: 'expiryDate', isTextarea: true },
+            { label: 'Salutation (To)', key: 'toText' },
+            { label: 'Customer Name', key: 'name' },
+            { label: 'Address Primary', key: 'address1' },
+            { label: 'Address Secondary', key: 'address2', isTextarea: true },
+            { label: 'Region & PIN', key: 'statePin' },
+            { label: 'Contact Mobile', key: 'mobile' },
+            { label: 'Agent Title', key: 'agentTitle', isTextarea: true },
+            { label: 'Agent Info', key: 'agentDetails', isTextarea: true }
+        ];
+
+        let data = JSON.parse(JSON.stringify(INITIAL_DATA));
+        let styles = JSON.parse(JSON.stringify(INITIAL_STYLES));
+        let showOutlines = false;
+
+        // --- PDF Auto Extract Logic ---
+        function parseInsuranceData(text) {
+            let name = "";
+            let addressRaw = "";
+            let state = "KERALA";
+            let pin = "";
+            let vehicle = "";
+            let expiry = "";
+            let amount = "";
+            let mobile = "";
+
+            // VAHANA NUMBER (Vehicle Number)
+            const vehicleMatch = text.match(/[A-Z]{2}-\d{2}-[A-Z]?-?\d+/);
+            if (vehicleMatch) {
+                vehicle = vehicleMatch[0];
+            }
+
+            // NAME - Handles OCR typos like 'Custorner' and grabs only the customer
+            const nameMatch = text.match(/(?:Customer|Custorner)\s+Name\s*:\s*([A-Z\s\.\,]+)/i) || text.match(/\bName\s*:\s*([A-Z\s\.\,]+)/i);
+            if (nameMatch) {
+                name = nameMatch[1].trim();
+                name = name.split(/Address/i)[0].trim(); // Prevent grabbing extra text
+            }
+
+            // ISOLATE CUSTOMER SECTION - This prevents grabbing the "Office Address" and Agent PIN
+            let customerSection = text;
+            const nameIndex = text.search(/(?:Customer|Custorner)\s+Name/i);
+            if (nameIndex !== -1) {
+                customerSection = text.substring(nameIndex);
+            }
+
+            // ADDRESS BLOCK - Extract everything between Address and City/Phone labels inside CUSTOMER SECTION
+            const addressBlockMatch = customerSection.match(/Address\s*:\s*([\s\S]*?)(?:शहर\/City|City|फोन|Phone|सेल\/Cell)/i);
+            if (addressBlockMatch) {
+                // Replacing newlines and double commas with a single comma so it splits naturally
+                addressRaw = addressBlockMatch[1]
+                    .replace(/\n/g, ",")
+                    .replace(/,,+/g, ",")
+                    .trim();
+            }
+
+            // STATE & PIN - Inside CUSTOMER SECTION
+            const stateMatch = customerSection.match(/राज्य\/State\s*:\s*([A-Z]+)/i);
+            if (stateMatch) {
+                state = stateMatch[1].trim();
+            }
+            
+            const pinMatch = customerSection.match(/(?:पिन\s*\/\s*PIN|PIN)\s*:\s*(\d{6})/i) || customerSection.match(/\b(\d{6})\b/);
+            if (pinMatch) {
+                pin = pinMatch[1] || pinMatch[0];
+            }
+
+            // MOBILE NUMBER - Extract from Customer block to avoid agent number
+            const phoneMatch = customerSection.match(/(?:फोन\s*Phone|सेल\/Cell)\s*:\s*([*\d\s]+)/i);
+            if (phoneMatch) {
+                mobile = phoneMatch[1].trim();
+                // Format masked number based exactly on the requested output
+                if (mobile.replace(/\s/g, '') === "******38") {
+                    mobile = "***** ***38";
+                }
+            }
+
+            // EXPIRY DATE
+            const expiryMatch = text.match(/(?:Midnight of|to midnight of)\s*(\d{2}\/\d{2}\/\d{4})/i) || text.match(/Date of expiry.*?(\d{2}\/\d{2}\/\d{4})/i);
+            if (expiryMatch) {
+                expiry = expiryMatch[1];
+            }
+
+            // AMOUNT
+            const amountMatch = text.match(/(?:NET PAYABLE|Total Amount|कुल राशि Total Amount).*?(\d{1,3}(?:,\d{3})*)/i);
+            if (amountMatch) {
+                amount = amountMatch[1];
+            }
+
+            fillEnvelope(name, addressRaw, state, pin, vehicle, expiry, amount, mobile);
+        }
+
+        function fillEnvelope(name, addressRaw, state, pin, vehicle, expiry, amount, mobile) {
+            
+            // Format name with a trailing comma per user request
+            if (name) data.name = name + ",";
+            
+            if (addressRaw) {
+                // Remove trailing comma from the raw string to clean up processing
+                addressRaw = addressRaw.replace(/,\s*$/, "");
+                const parts = addressRaw.split(",").map(s => s.trim()).filter(Boolean);
+                
+                // Address Primary
+                if (parts.length > 0) {
+                    data.address1 = parts[0] + ",";
+                }
+                
+                // Address Secondary
+                if (parts.length > 1) {
+                    // Place the first part of the secondary address (e.g. P.O.) on one line, and the rest on the next
+                    let line1 = parts[1] + ",";
+                    let remainingParts = parts.slice(2, 4);
+                    let line2 = remainingParts.length > 0 ? "\n" + remainingParts.join(",") + "," : "";
+                    data.address2 = line1 + line2;
+                }
+            }
+
+            // Region & PIN Formatting
+            if (state || pin) {
+                data.statePin = `${state || 'KERALA'},PIN: ${pin}.`;
+            }
+
+            if (vehicle) data.vehicleNo = vehicle;
+            if (expiry) data.expiryDate = "Expiry Date\n" + expiry;
+            if (amount) data.amount = "₹ " + amount;
+            if (mobile) data.mobile = "MOB:  " + mobile;
+
+            // Update UI Fields
+            Object.keys(data).forEach(key => {
+                const input = document.getElementById(`input-data-${key}`);
+                if (input) input.value = data[key];
+            });
+
+            // Update Canvas
+            updateAllCanvasStyles();
+        }
+
+        function showFeedback(message, type = 'success') {
+            const fb = document.getElementById('pdf-feedback');
+            const icon = document.getElementById('pdf-feedback-icon');
+            const text = document.getElementById('pdf-feedback-text');
+            
+            fb.classList.remove('hidden', 'bg-[#c4eebb]', 'text-[#002106]', 'border-[#146c2e]/20', 'bg-red-50', 'text-red-900', 'border-red-200');
+            
+            if (type === 'success') {
+                fb.classList.add('bg-[#c4eebb]', 'text-[#002106]', 'border-[#146c2e]/20');
+                icon.setAttribute('data-lucide', 'check-circle-2');
+                icon.classList.add('text-[#146c2e]');
+            } else {
+                fb.classList.add('bg-red-50', 'text-red-900', 'border-red-200');
+                icon.setAttribute('data-lucide', 'alert-circle');
+                icon.classList.add('text-red-600');
+            }
+            
+            text.innerText = message;
+            lucide.createIcons();
+
+            setTimeout(() => {
+                fb.classList.add('hidden');
+            }, 6000);
+        }
+
+        // --- Utility Functions ---
+        function getIconForKey(key) {
+            switch (key) {
+                case 'vehicleNo': return 'car';
+                case 'expiryDate': return 'calendar';
+                case 'name': return 'user';
+                case 'address1': 
+                case 'address2': 
+                case 'statePin': return 'map-pin';
+                case 'mobile': return 'phone';
+                case 'agentTitle':
+                case 'agentDetails': return 'briefcase';
+                case 'amount': return 'indian-rupee'; 
+                default: return 'type';
+            }
+        }
+
+        function switchTab(tabId) {
+            // Hide all
+            document.getElementById('view-data').classList.add('hidden');
+            document.getElementById('view-preview').classList.add('hidden');
+            document.getElementById('view-settings').classList.add('hidden');
+            
+            // Show target
+            document.getElementById(`view-${tabId}`).classList.remove('hidden');
+
+            // Update Nav Classes (Triggering CSS for M3 Pills)
+            ['data', 'preview', 'settings'].forEach(t => {
+                const btn = document.getElementById(`nav-${t}`);
+                if(t === tabId) {
+                    btn.classList.add('text-m3-primary');
+                    btn.classList.remove('text-slate-400');
+                } else {
+                    btn.classList.remove('text-m3-primary');
+                    btn.classList.add('text-slate-400');
+                }
+            });
+        }
+
+        function updateCanvasElementStyle(key) {
+            const el = document.getElementById(`canvas-${key}`);
+            if (!el) return;
+            
+            const style = styles[key];
+            const isHoverableOutline = showOutlines && !style.hasBorder;
+            
+            // Alignment logic
+            const textAlign = style.textAlign || 'center';
+            let transformOrigin = 'center center';
+            let translateX = '-50%';
+            
+            if (textAlign === 'left') {
+                transformOrigin = 'left center';
+                translateX = '0%';
+            } else if (textAlign === 'right') {
+                transformOrigin = 'right center';
+                translateX = '-100%';
+            }
+
+            // Apply Classes & Alignments for Export Consistency
+            el.style.boxSizing = 'border-box';
+            
+            if (isHoverableOutline) {
+                el.classList.add('guide-active');
+                el.style.padding = '8px';
+                el.style.borderRadius = '12px';
+                el.style.display = 'block';
+            } else {
+                el.classList.remove('guide-active');
+                if (style.hasBorder) {
+                    // Flexbox guarantees text remains perfectly dead-center inside the border for html2canvas
+                    el.style.display = 'flex';
+                    el.style.alignItems = 'center';
+                    el.style.justifyContent = textAlign === 'center' ? 'center' : (textAlign === 'right' ? 'flex-end' : 'flex-start');
+                    el.style.padding = '12px 28px'; 
+                    el.style.borderRadius = '16px';
+                    el.style.width = 'max-content'; // Forces perfectly symmetric borders
+                } else {
+                    el.style.display = 'block';
+                    el.style.padding = '0';
+                    el.style.borderRadius = '0';
+                    el.style.width = 'auto';
+                }
+            }
+
+            // Apply Styles
+            el.style.left = `${style.left}%`;
+            el.style.top = `${style.top}%`;
+            el.style.transform = `translate(${translateX}, -50%) rotate(${style.angle}deg)`;
+            el.style.transformOrigin = transformOrigin;
+            el.style.fontSize = `${style.fontSize}px`;
+            el.style.fontWeight = style.fontWeight;
+            el.style.color = style.color || 'black';
+            el.style.border = style.hasBorder ? `3px solid ${style.color || 'black'}` : 'none';
+            el.style.textAlign = textAlign;
+            el.innerText = data[key];
+        }
+
+        function updateAllCanvasStyles() {
+            Object.keys(data).forEach(key => updateCanvasElementStyle(key));
+        }
+
+        // --- UI Builders ---
+        function buildDataCard(config) {
+            const { label, key, isTextarea } = config;
+            const iconName = getIconForKey(key);
+
+            // M3 Styled Inputs
+            const inputElement = isTextarea 
+                ? `<textarea id="input-data-${key}" class="w-full px-5 py-4 bg-slate-50 border-none rounded-[20px] text-slate-800 font-bold shadow-inner focus:bg-white focus:ring-[3px] focus:ring-m3-primary/30 transition-all resize-none text-[16px] placeholder-slate-400" rows="2" placeholder="Enter ${label}...">${data[key]}</textarea>`
+                : `<input type="text" id="input-data-${key}" value="${data[key]}" class="w-full px-5 py-4 bg-slate-50 border-none rounded-[20px] text-slate-800 font-bold shadow-inner focus:bg-white focus:ring-[3px] focus:ring-m3-primary/30 transition-all text-[16px] placeholder-slate-400" placeholder="Enter ${label}..." />`;
+
+            return `
+            <div class="bg-white rounded-[32px] p-6 shadow-soft border border-slate-100 hover:shadow-soft-hover transition-all duration-300 transform hover:-translate-y-1 group relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-m3-primaryContainer/50 to-transparent rounded-full -mr-16 -mt-16 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                <div class="flex items-center gap-4 mb-5 relative z-10">
+                    <div class="w-[52px] h-[52px] rounded-[18px] bg-m3-surfaceContainer text-m3-primary flex items-center justify-center group-hover:bg-m3-primaryContainer group-hover:scale-110 transition-all duration-300">
+                        <i data-lucide="${iconName}" class="w-6 h-6 stroke-[2.5px]"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-[18px] tracking-tight">${label}</h3>
+                    </div>
+                </div>
+                <div class="relative z-10">
+                    ${inputElement}
+                </div>
+            </div>`;
+        }
+
+        function buildSettingsCard(config) {
+            const { label, key } = config;
+            const style = styles[key];
+            const iconName = getIconForKey(key);
+
+            return `
+            <div class="bg-white rounded-[32px] p-7 shadow-soft border border-slate-100 hover:border-m3-primaryContainer transition-colors duration-300">
+                <div class="flex items-center justify-between mb-6 border-b border-slate-100 pb-5">
+                    <div class="flex items-center gap-4">
+                        <div class="w-[52px] h-[52px] rounded-[18px] bg-slate-50 text-slate-600 flex items-center justify-center">
+                            <i data-lucide="${iconName}" class="w-6 h-6 stroke-[2.5px]"></i>
+                        </div>
+                        <h3 class="font-black text-slate-800 text-xl tracking-tight">${label}</h3>
+                    </div>
+                    
+                    <div class="flex items-center gap-3 bg-slate-50 p-2 rounded-[20px] border border-slate-200/60">
+                        <div class="relative group/color cursor-pointer">
+                            <input type="color" id="input-color-${key}" value="${style.color}" class="w-8 h-8 rounded-full border-[3px] border-white shadow-sm cursor-pointer p-0 overflow-hidden appearance-none bg-transparent hover:scale-110 transition-transform" title="Text Color" />
+                        </div>
+                        <div class="w-px h-6 bg-slate-200"></div>
+                        <label class="flex items-center gap-2 pr-2 cursor-pointer select-none">
+                            <div id="border-bg-${key}" class="w-12 h-6 rounded-full transition-colors duration-300 relative flex items-center p-1 ${style.hasBorder ? 'bg-m3-primary' : 'bg-slate-300'}">
+                                <div id="border-dot-${key}" class="w-4 h-4 rounded-full bg-white shadow-sm transform transition-transform duration-300 absolute ${style.hasBorder ? 'translate-x-6' : 'translate-x-0'}"></div>
+                            </div>
+                            <span class="text-[13px] font-bold text-slate-600 tracking-wide uppercase">Border</span>
+                            <input type="checkbox" id="input-border-${key}" ${style.hasBorder ? 'checked' : ''} class="hidden" />
+                        </label>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-6 gap-4">
+                    <div class="col-span-1">
+                        <label class="block text-[11px] text-slate-500 font-bold mb-1.5 uppercase tracking-widest">X Pos</label>
+                        <input type="number" step="0.1" id="input-x-${key}" value="${style.left.toFixed(2)}" class="w-full px-3 py-3 bg-slate-50 border-none rounded-[16px] text-[15px] font-bold text-slate-800 focus:bg-white focus:ring-[3px] focus:ring-m3-primary/30 transition-all text-center" />
+                    </div>
+                    <div class="col-span-1">
+                        <label class="block text-[11px] text-slate-500 font-bold mb-1.5 uppercase tracking-widest">Y Pos</label>
+                        <input type="number" step="0.1" id="input-y-${key}" value="${style.top.toFixed(2)}" class="w-full px-3 py-3 bg-slate-50 border-none rounded-[16px] text-[15px] font-bold text-slate-800 focus:bg-white focus:ring-[3px] focus:ring-m3-primary/30 transition-all text-center" />
+                    </div>
+                    <div class="col-span-1">
+                        <label class="block text-[11px] text-slate-500 font-bold mb-1.5 uppercase tracking-widest">Size</label>
+                        <input type="number" step="1" id="input-size-${key}" value="${style.fontSize}" class="w-full px-3 py-3 bg-slate-50 border-none rounded-[16px] text-[15px] font-bold text-slate-800 focus:bg-white focus:ring-[3px] focus:ring-m3-primary/30 transition-all text-center" />
+                    </div>
+                    <div class="col-span-1">
+                        <label class="block text-[11px] text-slate-500 font-bold mb-1.5 uppercase tracking-widest">Ang(°)</label>
+                        <input type="number" step="1" id="input-angle-${key}" value="${style.angle}" class="w-full px-3 py-3 bg-slate-50 border-none rounded-[16px] text-[15px] font-bold text-slate-800 focus:bg-white focus:ring-[3px] focus:ring-m3-primary/30 transition-all text-center" />
+                    </div>
+                    <div class="col-span-1">
+                        <label class="block text-[11px] text-slate-500 font-bold mb-1.5 uppercase tracking-widest">Weight</label>
+                        <div class="relative">
+                            <select id="input-weight-${key}" class="w-full pl-3 pr-8 py-3 bg-slate-50 border-none rounded-[16px] text-[15px] font-bold text-slate-800 focus:bg-white focus:ring-[3px] focus:ring-m3-primary/30 transition-all appearance-none cursor-pointer">
+                                <option value="normal" ${style.fontWeight === 'normal' ? 'selected' : ''}>Norm</option>
+                                <option value="bold" ${style.fontWeight === 'bold' ? 'selected' : ''}>Bold</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
+                                <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-span-1">
+                        <label class="block text-[11px] text-slate-500 font-bold mb-1.5 uppercase tracking-widest">Align</label>
+                        <div class="relative">
+                            <select id="input-align-${key}" class="w-full pl-3 pr-8 py-3 bg-slate-50 border-none rounded-[16px] text-[15px] font-bold text-slate-800 focus:bg-white focus:ring-[3px] focus:ring-m3-primary/30 transition-all appearance-none cursor-pointer">
+                                <option value="left" ${style.textAlign === 'left' ? 'selected' : ''}>Left</option>
+                                <option value="center" ${style.textAlign === 'center' ? 'selected' : ''}>Cent</option>
+                                <option value="right" ${style.textAlign === 'right' ? 'selected' : ''}>Right</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
+                                <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function initApp() {
+            const dataContainer = document.getElementById('data-fields-container');
+            const settingsContainer = document.getElementById('settings-fields-container');
+            const canvasContainer = document.getElementById('print-container');
+            
+            dataContainer.innerHTML = '';
+            settingsContainer.innerHTML = '';
+            canvasContainer.innerHTML = '';
+
+            FIELD_CONFIGS.forEach(config => {
+                const { key } = config;
+
+                // Inject UI into respective tabs
+                dataContainer.insertAdjacentHTML('beforeend', buildDataCard(config));
+                settingsContainer.insertAdjacentHTML('beforeend', buildSettingsCard(config));
+
+                // Build Canvas Element
+                const el = document.createElement('div');
+                el.id = `canvas-${key}`;
+                el.className = 'absolute whitespace-pre-wrap cursor-move transition-colors duration-200 select-none shadow-sm';
+                el.style.fontFamily = 'Inter, system-ui, sans-serif';
+                el.style.lineHeight = '1.4';
+                el.style.letterSpacing = '-0.02em';
+                el.style.boxSizing = 'border-box';
+                el.title = `Drag to reposition ${key}`;
+                canvasContainer.appendChild(el);
+
+                updateCanvasElementStyle(key);
+
+                // --- Event Listeners ---
+                
+                // Data Input
+                document.getElementById(`input-data-${key}`).addEventListener('input', (e) => {
+                    data[key] = e.target.value;
+                    updateCanvasElementStyle(key);
+                });
+
+                // Style Inputs
+                const bindStyle = (id, prop, isFloat = false) => {
+                    document.getElementById(id).addEventListener('input', (e) => {
+                        styles[key][prop] = isFloat ? parseFloat(e.target.value) || 0 : e.target.value;
+                        updateCanvasElementStyle(key);
+                    });
+                };
+
+                bindStyle(`input-color-${key}`, 'color');
+                bindStyle(`input-size-${key}`, 'fontSize', true);
+                bindStyle(`input-angle-${key}`, 'angle', true);
+                bindStyle(`input-weight-${key}`, 'fontWeight');
+                bindStyle(`input-align-${key}`, 'textAlign');
+                
+                // Position Inputs
+                document.getElementById(`input-x-${key}`).addEventListener('input', (e) => {
+                    styles[key].left = parseFloat(e.target.value) || 0;
+                    updateCanvasElementStyle(key);
+                });
+                document.getElementById(`input-y-${key}`).addEventListener('input', (e) => {
+                    styles[key].top = parseFloat(e.target.value) || 0;
+                    updateCanvasElementStyle(key);
+                });
+
+                // Border Toggle
+                document.getElementById(`input-border-${key}`).addEventListener('change', (e) => {
+                    const isChecked = e.target.checked;
+                    styles[key].hasBorder = isChecked;
+                    
+                    const bg = document.getElementById(`border-bg-${key}`);
+                    const dot = document.getElementById(`border-dot-${key}`);
+                    
+                    if(isChecked) {
+                        bg.classList.replace('bg-slate-300', 'bg-m3-primary');
+                        dot.classList.replace('translate-x-0', 'translate-x-6');
+                    } else {
+                        bg.classList.replace('bg-m3-primary', 'bg-slate-300');
+                        dot.classList.replace('translate-x-6', 'translate-x-0');
+                    }
+                    updateCanvasElementStyle(key);
+                });
+
+                // Drag Logic (Updates values in the hidden Settings tab instantly)
+                el.addEventListener('mousedown', (e) => {
+                    if (e.button !== 0) return; // Left click only
+                    e.preventDefault();
+                    
+                    const rect = canvasContainer.getBoundingClientRect();
+                    const startX = e.clientX;
+                    const startY = e.clientY;
+                    const startStyleLeft = styles[key].left;
+                    const startStyleTop = styles[key].top;
+
+                    const onMouseMove = (moveEvent) => {
+                        const deltaX = moveEvent.clientX - startX;
+                        const deltaY = moveEvent.clientY - startY;
+
+                        const deltaXPercent = (deltaX / rect.width) * 100;
+                        const deltaYPercent = (deltaY / rect.height) * 100;
+
+                        styles[key].left = Math.max(0, Math.min(100, startStyleLeft + deltaXPercent));
+                        styles[key].top = Math.max(0, Math.min(100, startStyleTop + deltaYPercent));
+
+                        // Sync Inputs in Settings Tab
+                        document.getElementById(`input-x-${key}`).value = styles[key].left.toFixed(2);
+                        document.getElementById(`input-y-${key}`).value = styles[key].top.toFixed(2);
+                        
+                        updateCanvasElementStyle(key);
+                    };
+
+                    const onMouseUp = () => {
+                        document.removeEventListener('mousemove', onMouseMove);
+                        document.removeEventListener('mouseup', onMouseUp);
+                    };
+
+                    document.addEventListener('mousemove', onMouseMove);
+                    document.addEventListener('mouseup', onMouseUp);
+                });
+            });
+
+            // Re-render Icons
+            lucide.createIcons();
+            
+            // Set initial tab to preview
+            switchTab('preview');
+        }
+
+        // --- Global Event Listeners ---
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            initApp();
+
+            // --- PDF Upload Logic ---
+            document.getElementById('pdf-upload').addEventListener('change', async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const btnText = document.getElementById('pdf-upload-text');
+                const originalText = btnText.innerText;
+                btnText.innerText = 'Extracting Data...';
+
+                try {
+                    const arrayBuffer = await file.arrayBuffer();
+                    const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+                    let fullText = "";
+
+                    // Extract text from all pages
+                    for (let i = 1; i <= pdf.numPages; i++) {
+                        const page = await pdf.getPage(i);
+                        const textContent = await page.getTextContent();
+                        const pageText = textContent.items.map(item => item.str).join(" ");
+                        fullText += pageText + " \n";
+                    }
+
+                    // Call the parser regex engine
+                    parseInsuranceData(fullText);
+                    
+                    showFeedback('Document processed successfully!', 'success');
+                } catch (error) {
+                    console.error("Error parsing PDF:", error);
+                    showFeedback('Could not read PDF. Make sure it is a valid text-based file.', 'error');
+                } finally {
+                    btnText.innerText = originalText;
+                    e.target.value = ''; // Reset input so the same file can be uploaded again if needed
+                }
+            });
+
+            // Background Image Upload
+            document.getElementById('bg-upload').addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        document.getElementById('print-container').style.backgroundImage = `url(${event.target.result})`;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Show Outlines Toggle
+            document.getElementById('show-outlines').addEventListener('change', (e) => {
+                showOutlines = e.target.checked;
+                const bg = document.getElementById('guide-toggle-bg');
+                const dot = document.getElementById('guide-toggle-dot');
+                const iconOn = document.getElementById('guide-icon-on');
+                const iconOff = document.getElementById('guide-icon-off');
+                const container = document.getElementById('guide-icon-container');
+
+                if (showOutlines) {
+                    bg.classList.replace('bg-slate-300', 'bg-m3-primary');
+                    dot.classList.replace('translate-x-0', 'translate-x-6');
+                    iconOn.classList.remove('hidden');
+                    iconOff.classList.add('hidden');
+                    container.classList.add('text-m3-primary');
+                } else {
+                    bg.classList.replace('bg-m3-primary', 'bg-slate-300');
+                    dot.classList.replace('translate-x-6', 'translate-x-0');
+                    iconOn.classList.add('hidden');
+                    iconOff.classList.remove('hidden');
+                    container.classList.remove('text-m3-primary');
+                }
+                updateAllCanvasStyles();
+            });
+
+            // Reset Default
+            document.getElementById('btn-reset').addEventListener('click', () => {
+                if (window.confirm("Are you sure you want to reset to default data and positions?")) {
+                    data = JSON.parse(JSON.stringify(INITIAL_DATA));
+                    styles = JSON.parse(JSON.stringify(INITIAL_STYLES));
+                    document.getElementById('print-container').style.backgroundImage = 'none';
+                    initApp();
+                    showFeedback('Data reset to defaults.', 'success');
+                }
+            });
+
+            // Reusable function to capture canvas in high quality
+            const captureCanvas = async () => {
+                const printContainer = document.getElementById('print-container');
+                return await html2canvas(printContainer, {
+                    scale: 3, // 3x scale for crisp high-quality print/image
+                    useCORS: true,
+                    backgroundColor: '#ffffff', // Guarantee white background
+                    logging: false
+                });
+            };
+
+            // Download Document as PNG
+            document.getElementById('btn-download-png').addEventListener('click', async () => {
+                const btn = document.getElementById('btn-download-png');
+                const originalText = btn.innerHTML;
+
+                switchTab('preview');
+                const wasShowingOutlines = showOutlines;
+                if (showOutlines) {
+                    showOutlines = false;
+                    updateAllCanvasStyles();
+                }
+
+                setTimeout(async () => {
+                    try {
+                        btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>...`;
+                        lucide.createIcons();
+
+                        const canvas = await captureCanvas();
+                        const imgData = canvas.toDataURL('image/png');
+                        const link = document.createElement('a');
+                        
+                        const fileName = data.vehicleNo ? `PrintStudio_${data.vehicleNo.replace(/\s+/g, '_')}.png` : 'PrintStudio_Document.png';
+                        link.download = fileName;
+                        link.href = imgData;
+                        link.click();
+                        
+                        showFeedback('PNG downloaded successfully!', 'success');
+                    } catch (err) {
+                        console.error('Error downloading:', err);
+                        showFeedback('Failed to download PNG.', 'error');
+                    } finally {
+                        btn.innerHTML = originalText;
+                        lucide.createIcons();
+                        if (wasShowingOutlines) { showOutlines = true; updateAllCanvasStyles(); }
+                    }
+                }, 300);
+            });
+
+            // Download Document as PDF
+            document.getElementById('btn-download-pdf').addEventListener('click', async () => {
+                const btn = document.getElementById('btn-download-pdf');
+                const originalText = btn.innerHTML;
+
+                switchTab('preview');
+                const wasShowingOutlines = showOutlines;
+                if (showOutlines) {
+                    showOutlines = false;
+                    updateAllCanvasStyles();
+                }
+
+                setTimeout(async () => {
+                    try {
+                        btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>...`;
+                        lucide.createIcons();
+
+                        const canvas = await captureCanvas();
+                        const imgData = canvas.toDataURL('image/png');
+                        
+                        // Create PDF matching A4 size perfectly (210mm x 297mm)
+                        const { jsPDF } = window.jspdf;
+                        const pdf = new jsPDF({
+                            orientation: 'portrait',
+                            unit: 'mm',
+                            format: 'a4'
+                        });
+                        
+                        pdf.addImage(imgData, 'PNG', 0, 0, 210, 297);
+                        
+                        const fileName = data.vehicleNo ? `PrintStudio_${data.vehicleNo.replace(/\s+/g, '_')}.pdf` : 'PrintStudio_Document.pdf';
+                        pdf.save(fileName);
+                        
+                        showFeedback('PDF downloaded successfully!', 'success');
+                    } catch (err) {
+                        console.error('Error downloading:', err);
+                        showFeedback('Failed to download PDF.', 'error');
+                    } finally {
+                        btn.innerHTML = originalText;
+                        lucide.createIcons();
+                        if (wasShowingOutlines) { showOutlines = true; updateAllCanvasStyles(); }
+                    }
+                }, 300);
+            });
+
+            // Print Document
+            document.getElementById('btn-print').addEventListener('click', () => {
+                const wasPreviewHidden = document.getElementById('view-preview').classList.contains('hidden');
+                
+                // Force tab switch before attempting to print to guarantee DOM elements are active
+                switchTab('preview');
+                
+                const wasShowingOutlines = showOutlines;
+
+                if (showOutlines) {
+                    showOutlines = false;
+                    updateAllCanvasStyles();
+                }
+
+                // Small delay to allow CSS transitions/DOM layout to finish before calling print spooler
+                setTimeout(() => {
+                    window.print();
+                    
+                    if (wasShowingOutlines) {
+                        showOutlines = true;
+                        updateAllCanvasStyles();
+                    }
+                }, 300);
+            });
+        });
+    </script>
+</body>
+</html>
