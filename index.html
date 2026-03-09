@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -1130,8 +1131,10 @@
                 }, 300);
             });
 
-            // Print Document
-            document.getElementById('btn-print').addEventListener('click', () => {
+            // Print Document (UPDATED FOR MEDIAN.CO SUPPORT)
+            document.getElementById('btn-print').addEventListener('click', async () => {
+                const btn = document.getElementById('btn-print');
+                const originalText = btn.innerHTML;
                 const wasPreviewHidden = document.getElementById('view-preview').classList.contains('hidden');
                 
                 // Force tab switch before attempting to print to guarantee DOM elements are active
@@ -1144,15 +1147,58 @@
                     updateAllCanvasStyles();
                 }
 
-                // Small delay to allow CSS transitions/DOM layout to finish before calling print spooler
-                setTimeout(() => {
-                    window.print();
-                    
-                    if (wasShowingOutlines) {
-                        showOutlines = true;
-                        updateAllCanvasStyles();
-                    }
-                }, 300);
+                // Check for Median.co app environment
+                const isMedian = typeof median !== 'undefined';
+
+                if (isMedian) {
+                    // In Median.co, native window.print() doesn't work well.
+                    // Instead, generate a PDF and use the Median JS Bridge to open the native PDF viewer.
+                    setTimeout(async () => {
+                        try {
+                            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span class="hidden md:inline">Processing...</span>`;
+                            lucide.createIcons();
+
+                            const canvas = await captureCanvas();
+                            const imgData = canvas.toDataURL('image/png');
+                            
+                            const { jsPDF } = window.jspdf;
+                            const pdf = new jsPDF({
+                                orientation: 'portrait',
+                                unit: 'mm',
+                                format: 'a4'
+                            });
+                            
+                            pdf.addImage(imgData, 'PNG', 0, 0, 210, 297);
+                            const pdfDataUri = pdf.output('datauristring');
+                            
+                            // Use Median's recommended bridge
+                            if (median.share && median.share.downloadFile) {
+                                median.share.downloadFile({ url: pdfDataUri, open: true });
+                            } else {
+                                window.location.href = pdfDataUri;
+                            }
+                            
+                            showFeedback('Opening in PDF Viewer for Printing...', 'success');
+                        } catch (err) {
+                            console.error('Error preparing print:', err);
+                            showFeedback('Failed to prepare document for printing.', 'error');
+                        } finally {
+                            btn.innerHTML = originalText;
+                            lucide.createIcons();
+                            if (wasShowingOutlines) { showOutlines = true; updateAllCanvasStyles(); }
+                        }
+                    }, 300);
+                } else {
+                    // Standard web environment print
+                    setTimeout(() => {
+                        window.print();
+                        
+                        if (wasShowingOutlines) {
+                            showOutlines = true;
+                            updateAllCanvasStyles();
+                        }
+                    }, 300);
+                }
             });
         });
     </script>
