@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Policy Cover Studio - Modern Print Editor</title>
+    <title>Policy Cover Studio - Modern Print Editor & PIN Directory</title>
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,7 +24,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
-        /* CSS Reset & Variables */
+        /* ==========================================================================
+           APP 1: POLICY COVER STUDIO (CSS Variables & Resets)
+           ========================================================================== */
         :root {
             --m3-primary: #0b57d0;
             --m3-on-primary: #ffffff;
@@ -59,6 +61,40 @@
             --bg-slate-100: #f1f5f9;
             --bg-slate-200: #e2e8f0;
             --bg-slate-300: #cbd5e1;
+
+            /* APP 2: KERALA PIN CODE DATABASE (CSS Variables) */
+            --md-primary: #6750A4;
+            --md-on-primary: #FFFFFF;
+            --md-primary-container: #EADDFF;
+            --md-on-primary-container: #21005D;
+            --md-secondary: #625B71;
+            --md-on-secondary: #FFFFFF;
+            --md-secondary-container: #E8DEF8;
+            --md-on-secondary-container: #1D192B;
+            --md-tertiary: #7D5260;
+            --md-on-tertiary: #FFFFFF;
+            --md-tertiary-container: #FFD8E4;
+            --md-on-tertiary-container: #31111D;
+            --md-error: #B3261E;
+            --md-error-container: #F9DEDC;
+            --md-on-error-container: #410E0B;
+            --md-surface-pin: #FEF7FF;
+            --md-on-surface: #1D1B20;
+            --md-surface-variant: #E7E0EC;
+            --md-on-surface-variant: #49454F;
+            --md-outline: #79747E;
+            --md-outline-variant: #CAC4D0;
+            --md-surface-container-lowest: #FFFFFF;
+            --md-surface-container-high-pin: #ECE6F0;
+            --md-surface-container-highest: #E6E0E9;
+            --md-elevation-1: 0px 1px 3px 1px rgba(0, 0, 0, 0.15), 0px 1px 2px 0px rgba(0, 0, 0, 0.30);
+            --md-elevation-2: 0px 2px 6px 2px rgba(0, 0, 0, 0.15), 0px 1px 2px 0px rgba(0, 0, 0, 0.30);
+            --md-elevation-3: 0px 4px 8px 3px rgba(0, 0, 0, 0.15), 0px 1px 3px 0px rgba(0, 0, 0, 0.30);
+            --md-shape-sm: 8px;
+            --md-shape-md: 16px;
+            --md-shape-lg: 24px;
+            --md-shape-full: 9999px;
+            --md-motion-standard: all 0.3s cubic-bezier(0.2, 0, 0, 1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -78,8 +114,6 @@
         .hidden { display: none !important; }
 
         /* Animations */
-        @keyframes pulse { 50% { opacity: .5; } }
-        .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
         .animate-spin { animation: spin 1s linear infinite; }
 
@@ -118,16 +152,16 @@
         .header-actions { display: flex; align-items: center; gap: 4px; }
         @media (min-width: 768px) { .header-actions { gap: 16px; } }
 
-        .btn-icon {
+        .btn-icon-top {
             padding: 8px; color: var(--text-slate-500); border-radius: 50%;
             transition: all 0.2s; display: flex; align-items: center; justify-content: center;
         }
-        @media (min-width: 768px) { .btn-icon { padding: 10px; } }
-        .btn-icon:hover { color: var(--m3-primary); background-color: var(--m3-primary-container); }
-        .btn-icon.danger-hover:hover { color: #dc2626; background-color: #fef2f2; }
-        .btn-icon:active { transform: scale(0.9); }
-        .btn-icon svg { width: 20px; height: 20px; }
-        @media (min-width: 768px) { .btn-icon svg { width: 24px; height: 24px; } }
+        @media (min-width: 768px) { .btn-icon-top { padding: 10px; } }
+        .btn-icon-top:hover { color: var(--m3-primary); background-color: var(--m3-primary-container); }
+        .btn-icon-top.danger-hover:hover { color: #dc2626; background-color: #fef2f2; }
+        .btn-icon-top:active { transform: scale(0.9); }
+        .btn-icon-top svg { width: 20px; height: 20px; }
+        @media (min-width: 768px) { .btn-icon-top svg { width: 24px; height: 24px; } }
 
         .btn-group {
             display: none; align-items: center; background-color: var(--m3-tertiary-container);
@@ -236,7 +270,6 @@
         .scroll-btn:active { transform: scale(0.9); }
         .scroll-btn svg { width: 20px; height: 20px; stroke-width: 2.5px; }
         @media (min-width: 768px) { .scroll-btn svg { width: 24px; height: 24px; } }
-
         .scroll-divider { width: 20px; height: 1px; background-color: var(--bg-slate-200); }
 
         /* --- Google Form Style UI for Data Tab --- */
@@ -275,20 +308,16 @@
             background-color: var(--m3-primary); border-top-left-radius: 8px; border-bottom-left-radius: 8px;
         }
         
-        .form-card-title {
-            font-size: 15px; font-weight: 500; color: var(--text-slate-800); display: flex; align-items: center; gap: 4px;
-        }
+        .form-card-title { font-size: 15px; font-weight: 500; color: var(--text-slate-800); display: flex; align-items: center; gap: 4px; }
         
         .form-input {
             width: 100%; border: none; border-bottom: 1px solid var(--text-slate-400);
             padding: 12px 0; font-size: 16px; color: var(--text-slate-800); background: transparent; transition: border-bottom-color 0.2s;
             resize: none; font-family: inherit; line-height: 1.6; min-height: 48px; display: block;
         }
-        .form-input:focus {
-            outline: none; border-bottom: 2px solid var(--m3-primary); padding-bottom: 11px;
-        }
+        .form-input:focus { outline: none; border-bottom: 2px solid var(--m3-primary); padding-bottom: 11px; }
         textarea.form-input { overflow-y: hidden; }
-        
+
         /* --- Feedback Banner --- */
         .feedback-banner {
             position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 100;
@@ -298,43 +327,35 @@
         }
         .feedback-banner.hidden { display: flex !important; opacity: 0; pointer-events: none; transform: translate(-50%, -10px); }
         .feedback-banner svg { width: 20px; height: 20px; flex-shrink: 0; }
-        
         .feedback-success { background-color: #c4eebb; color: #002106; border-color: rgba(20, 108, 46, 0.2); }
         .feedback-success svg { color: var(--m3-tertiary); }
         .feedback-error { background-color: #fef2f2; color: #7f1d1d; border-color: #fecaca; }
         .feedback-error svg { color: #dc2626; }
 
-        /* --- Section Titles (Settings) --- */
+        /* --- Settings/Other Elements --- */
         .section-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
         .section-header h3 { font-size: 20px; font-weight: 900; color: var(--text-slate-800); letter-spacing: -0.02em; }
         @media (min-width: 768px) { .section-header h3 { font-size: 24px; } }
         .section-divider { height: 1px; background-color: var(--bg-slate-200); flex: 1; }
-
-        /* --- Grids (Settings) --- */
         .settings-grid-main { display: grid; grid-template-columns: repeat(1, 1fr); gap: 16px; margin-bottom: 32px; }
         @media (min-width: 768px) { .settings-grid-main { grid-template-columns: repeat(2, 1fr); gap: 24px; margin-bottom: 48px; } }
-
         .settings-list-grid { display: grid; grid-template-columns: repeat(1, 1fr); gap: 16px; }
         @media (min-width: 1024px) { .settings-list-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; } }
 
-        /* --- Components: Settings Global Cards --- */
-        .guide-card {
-            background: linear-gradient(to bottom right, #fff8e1, #ffecb3); border-radius: 24px; padding: 24px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05); border: 1px solid rgba(253, 230, 138, 0.5);
-            position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between;
-        }
-        @media (min-width: 768px) { .guide-card { padding: 32px; } }
-        .guide-card-decor { position: absolute; right: -40px; top: -40px; width: 192px; height: 192px; background-color: #fbbf24; border-radius: 50%; filter: blur(48px); opacity: 0.2; transition: opacity 0.3s; pointer-events: none; }
-        .guide-card:hover .guide-card-decor { opacity: 0.4; }
-        .guide-card-content { position: relative; z-index: 10; margin-bottom: 20px; }
-        .guide-icon { width: 48px; height: 48px; background-color: #fef3c7; color: #b45309; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
-        @media (min-width: 768px) { .guide-icon { width: 56px; height: 56px; border-radius: 20px; margin-bottom: 16px; } }
-        .guide-icon svg { width: 24px; height: 24px; stroke-width: 2.5px; }
-        @media (min-width: 768px) { .guide-icon svg { width: 28px; height: 28px; } }
-        .guide-card h3 { font-size: 20px; font-weight: 900; color: #78350f; margin-bottom: 8px; letter-spacing: -0.02em; }
-        @media (min-width: 768px) { .guide-card h3 { font-size: 24px; } }
-        .guide-card p { color: rgba(146, 64, 14, 0.8); font-weight: 500; font-size: 15px; line-height: 1.4; }
-        @media (min-width: 768px) { .guide-card p { font-size: 18px; } }
+        /* Guide & Bounds Cards */
+        .guide-card, .bounds-card { background-color: white; border-radius: 24px; padding: 24px; box-shadow: var(--shadow-soft); border: 1px solid var(--bg-slate-100); display: flex; flex-direction: column; position: relative; overflow: hidden; }
+        .guide-card { background: linear-gradient(to bottom right, #fff8e1, #ffecb3); border-color: rgba(253, 230, 138, 0.5); justify-content: space-between;}
+        @media (min-width: 768px) { .guide-card, .bounds-card { padding: 32px; } }
+        .guide-card-decor { position: absolute; right: -40px; top: -40px; width: 192px; height: 192px; background-color: #fbbf24; border-radius: 50%; filter: blur(48px); opacity: 0.2; pointer-events: none; }
+        .guide-card-content, .bounds-header { position: relative; z-index: 10; margin-bottom: 20px; }
+        .guide-icon, .bounds-icon { width: 48px; height: 48px; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+        .guide-icon { background-color: #fef3c7; color: #b45309; }
+        .bounds-icon { background-color: var(--m3-primary-container); color: var(--m3-primary); }
+        .guide-icon svg, .bounds-icon svg { width: 24px; height: 24px; stroke-width: 2.5px; }
+        .guide-card h3, .bounds-card h3 { font-size: 20px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.02em; }
+        .guide-card h3 { color: #78350f; } .bounds-card h3 { color: var(--text-slate-800); }
+        .guide-card p { color: rgba(146, 64, 14, 0.8); font-weight: 500; font-size: 15px; }
+        .bounds-card p { color: var(--text-slate-500); font-weight: 500; font-size: 15px; }
         
         .btn-amber {
             display: inline-flex; align-items: center; justify-content: center; padding: 14px 24px;
@@ -342,27 +363,11 @@
             cursor: pointer; box-shadow: var(--shadow-2); transition: all 0.2s; position: relative; z-index: 10; width: 100%;
         }
         @media (min-width: 640px) { .btn-amber { width: max-content; } }
-        @media (min-width: 768px) { .btn-amber { padding: 16px 24px; font-size: 16px; border-radius: 20px; } }
         .btn-amber:hover { background-color: #d97706; box-shadow: var(--shadow-3); }
         .btn-amber:active { transform: scale(0.95); }
         .btn-amber svg { width: 20px; height: 20px; margin-right: 8px; }
 
-        .bounds-card {
-            background-color: white; border-radius: 24px; padding: 24px; box-shadow: var(--shadow-soft);
-            border: 1px solid var(--bg-slate-100); display: flex; flex-direction: column; justify-content: center;
-        }
-        @media (min-width: 768px) { .bounds-card { padding: 32px; } }
-        .bounds-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; }
-        @media (min-width: 768px) { .bounds-header { margin-bottom: 24px; } }
-        .bounds-icon { width: 48px; height: 48px; background-color: var(--m3-primary-container); color: var(--m3-primary); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
-        @media (min-width: 768px) { .bounds-icon { width: 56px; height: 56px; border-radius: 20px; margin-bottom: 16px; } }
-        .bounds-icon svg { width: 24px; height: 24px; stroke-width: 2.5px; }
-        @media (min-width: 768px) { .bounds-icon svg { width: 28px; height: 28px; } }
-        .bounds-card h3 { font-size: 20px; font-weight: 900; color: var(--text-slate-800); margin-bottom: 8px; letter-spacing: -0.02em; }
-        @media (min-width: 768px) { .bounds-card h3 { font-size: 24px; } }
-        .bounds-card p { color: var(--text-slate-500); font-weight: 500; font-size: 15px; line-height: 1.4; }
-        @media (min-width: 768px) { .bounds-card p { font-size: 18px; } }
-
+        /* Toggles */
         .toggle-row {
             display: flex; align-items: center; justify-content: space-between; padding: 14px;
             background-color: var(--bg-slate-50); border-radius: 16px; border: 1px solid rgba(226, 232, 240, 0.6);
@@ -371,13 +376,10 @@
         @media (min-width: 768px) { .toggle-row { padding: 16px; border-radius: 20px; } }
         .toggle-row:active { background-color: var(--bg-slate-100); }
         .toggle-label-group { display: flex; align-items: center; gap: 12px; }
-        .toggle-icon-wrap { padding: 8px; border-radius: 50%; background-color: white; box-shadow: 0 1px 2px rgba(0,0,0,0.05); color: var(--text-slate-400); transition: color 0.2s; display: flex; align-items: center; justify-content: center; }
+        .toggle-icon-wrap { padding: 8px; border-radius: 50%; background-color: white; box-shadow: 0 1px 2px rgba(0,0,0,0.05); color: var(--text-slate-400); display: flex; align-items: center; justify-content: center; }
         .toggle-icon-wrap.active { color: var(--m3-primary); }
         .toggle-icon-wrap svg { width: 20px; height: 20px; }
         .toggle-text { font-size: 15px; font-weight: 700; color: var(--text-slate-700); user-select: none; }
-        @media (min-width: 768px) { .toggle-text { font-size: 17px; } }
-        
-        /* Custom Toggle Switch */
         .toggle-track { width: 48px; height: 28px; border-radius: 9999px; background-color: var(--bg-slate-300); position: relative; transition: background-color 0.3s; display: flex; align-items: center; padding: 4px; }
         @media (min-width: 768px) { .toggle-track { width: 56px; height: 32px; } }
         .toggle-track.active { background-color: var(--m3-primary); }
@@ -386,32 +388,23 @@
         .toggle-track.active .toggle-thumb { transform: translateX(20px); }
         @media (min-width: 768px) { .toggle-track.active .toggle-thumb { transform: translateX(24px); } }
 
-        /* --- Components: Settings Field Card --- */
+        /* Settings Card & Props Grid */
         .settings-card { background-color: white; border-radius: 24px; padding: 20px; box-shadow: var(--shadow-soft); border: 1px solid var(--bg-slate-100); }
-        @media (min-width: 768px) { .settings-card { padding: 24px; } }
         .settings-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; border-bottom: 1px solid var(--bg-slate-100); padding-bottom: 16px; }
         .settings-title-group { display: flex; align-items: center; gap: 12px; }
         .settings-icon { width: 40px; height: 40px; border-radius: 12px; background-color: var(--bg-slate-50); color: var(--text-slate-600); display: flex; align-items: center; justify-content: center; }
         .settings-icon svg { width: 20px; height: 20px; stroke-width: 2.5px; }
-        .settings-header h3 { font-size: 16px; font-weight: 900; color: var(--text-slate-800); letter-spacing: -0.02em; }
-        @media (min-width: 768px) { .settings-header h3 { font-size: 18px; } }
-
+        .settings-header h3 { font-size: 16px; font-weight: 900; color: var(--text-slate-800); }
         .settings-controls { display: flex; align-items: center; gap: 8px; background-color: var(--bg-slate-50); padding: 6px; border-radius: 16px; border: 1px solid rgba(226, 232, 240, 0.6); }
-        @media (min-width: 768px) { .settings-controls { gap: 12px; padding: 8px; } }
         .color-picker { width: 28px; height: 28px; border-radius: 50%; border: 2px solid white; box-shadow: 0 1px 2px rgba(0,0,0,0.05); cursor: pointer; padding: 0; appearance: none; background: transparent; }
-        @media (min-width: 768px) { .color-picker { width: 32px; height: 32px; } }
         .control-divider { width: 1px; height: 20px; background-color: var(--bg-slate-200); }
-        
         .mini-toggle { display: flex; align-items: center; gap: 8px; padding-right: 8px; cursor: pointer; user-select: none; }
         .mini-track { width: 40px; height: 24px; border-radius: 9999px; background-color: var(--bg-slate-300); position: relative; transition: background-color 0.3s; display: flex; align-items: center; padding: 4px; }
-        @media (min-width: 768px) { .mini-track { width: 48px; height: 24px; } }
         .mini-track.active { background-color: var(--m3-primary); }
         .mini-thumb { width: 16px; height: 16px; background-color: white; border-radius: 50%; box-shadow: var(--shadow-1); transform: translateX(0); transition: transform 0.3s; }
         .mini-track.active .mini-thumb { transform: translateX(16px); }
-        @media (min-width: 768px) { .mini-track.active .mini-thumb { transform: translateX(24px); } }
         .mini-label { font-size: 11px; font-weight: 700; color: var(--text-slate-600); text-transform: uppercase; letter-spacing: 0.025em; display: none; }
         @media (min-width: 640px) { .mini-label { display: inline; } }
-        @media (min-width: 768px) { .mini-label { font-size: 12px; } }
 
         .props-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
         @media (min-width: 640px) { .props-grid { grid-template-columns: repeat(6, 1fr); } }
@@ -422,16 +415,12 @@
         .prop-select { appearance: none; cursor: pointer; }
 
         /* --- Preview / Canvas & Toolbars --- */
-        #view-preview { 
-            display: flex !important; flex-direction: column; overflow: hidden; padding: 0;
-        }
+        #view-preview { display: flex !important; flex-direction: column; overflow: hidden; padding: 0; }
         #view-preview.hidden { display: none !important; }
         
         .preview-toolbar {
-            flex-shrink: 0; margin: 16px auto;
-            background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(16px);
-            padding: 8px; border-radius: 9999px; border: 1px solid var(--bg-slate-200); box-shadow: var(--shadow-3);
-            display: flex; align-items: center; gap: 8px; z-index: 20;
+            flex-shrink: 0; margin: 16px auto; background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(16px);
+            padding: 8px; border-radius: 9999px; border: 1px solid var(--bg-slate-200); box-shadow: var(--shadow-3); display: flex; align-items: center; gap: 8px; z-index: 20;
         }
         @media (min-width: 768px) { .preview-toolbar { margin: 24px auto; padding: 8px 12px; gap: 12px; } }
         
@@ -439,40 +428,26 @@
             width: 36px; height: 36px; border-radius: 50%; color: var(--text-slate-600);
             display: flex; align-items: center; justify-content: center; transition: all 0.2s;
         }
-        @media (min-width: 768px) { .tool-btn { width: 40px; height: 40px; } }
         .tool-btn:hover { background-color: var(--bg-slate-100); color: var(--m3-primary); }
         .tool-btn:active { transform: scale(0.9); }
         .tool-btn svg { width: 20px; height: 20px; stroke-width: 2.5px; }
-
         .tool-btn.toggle { width: auto; padding: 0 16px; border-radius: 20px; gap: 8px; font-weight: 700; font-size: 14px; }
         .tool-btn.toggle.active { background-color: var(--m3-primary-container); color: var(--m3-primary); }
-
         .zoom-text { font-size: 13px; font-weight: 800; color: var(--text-slate-700); min-width: 48px; text-align: center; font-variant-numeric: tabular-nums; }
         .tool-divider { width: 1px; height: 24px; background-color: var(--bg-slate-200); }
 
         .mobile-fabs { position: fixed; bottom: 104px; right: 16px; display: flex; flex-direction: column; gap: 12px; z-index: 30; }
         @media (min-width: 1024px) { .mobile-fabs { display: none; } }
-        .fab {
-            width: 52px; height: 52px; border-radius: 18px; box-shadow: var(--shadow-3);
-            display: flex; align-items: center; justify-content: center; transition: transform 0.2s;
-        }
+        .fab { width: 52px; height: 52px; border-radius: 18px; box-shadow: var(--shadow-3); display: flex; align-items: center; justify-content: center; transition: transform 0.2s; }
         .fab:active { transform: scale(0.9); }
         .fab.png { background-color: var(--m3-tertiary-container); color: var(--m3-on-tertiary-container); }
         .fab.pdf { background-color: var(--m3-primary-container); color: var(--m3-on-primary-container); }
         .fab svg { width: 24px; height: 24px; }
 
-        .pan-viewport {
-            flex: 1; position: relative; width: 100%; overflow: hidden; 
-            touch-action: none; cursor: grab;
-        }
+        .pan-viewport { flex: 1; position: relative; width: 100%; overflow: hidden; touch-action: none; cursor: grab; }
         .pan-viewport:active { cursor: grabbing; }
 
-        .canvas-wrapper { 
-            position: absolute; left: 50%; top: 50%;
-            width: 794px; height: 1123px; transform-origin: center center;
-            transform: translate(-50%, -50%) scale(1);
-        }
-
+        .canvas-wrapper { position: absolute; left: 50%; top: 50%; width: 794px; height: 1123px; transform-origin: center center; transform: translate(-50%, -50%) scale(1); }
         .dot-pattern { background-image: radial-gradient(var(--bg-slate-300) 1px, transparent 1px); background-size: 20px 20px; }
 
         #print-container {
@@ -487,51 +462,107 @@
             letter-spacing: -0.02em; box-sizing: border-box; cursor: default; 
         }
 
-        /* Edit Mode Active Styles */
-        #print-container.edit-mode-active .draggable-el {
-            cursor: move;
-            outline: 1px dashed rgba(11, 87, 208, 0.3);
-            outline-offset: 2px;
-        }
-        #print-container.edit-mode-active .draggable-el:hover {
-            outline-color: var(--m3-primary);
-            background-color: rgba(211, 227, 253, 0.2);
-        }
+        #print-container.edit-mode-active .draggable-el { cursor: move; outline: 1px dashed rgba(11, 87, 208, 0.3); outline-offset: 2px; }
+        #print-container.edit-mode-active .draggable-el:hover { outline-color: var(--m3-primary); background-color: rgba(211, 227, 253, 0.2); }
 
         .guide-active {
             border: 2px dashed var(--m3-primary) !important;
             background-color: rgba(211, 227, 253, 0.4) !important;
-            backdrop-filter: blur(2px);
-            box-shadow: 0 8px 24px rgba(11, 87, 208, 0.15) !important;
+            backdrop-filter: blur(2px); box-shadow: 0 8px 24px rgba(11, 87, 208, 0.15) !important;
         }
-        #print-container.edit-mode-active .guide-active:hover {
-            background-color: rgba(211, 227, 253, 0.7) !important;
-            z-index: 50;
-        }
+        #print-container.edit-mode-active .guide-active:hover { background-color: rgba(211, 227, 253, 0.7) !important; z-index: 50; }
 
         /* --- Print CSS --- */
         @media print {
             @page { size: A4; margin: 0; }
-            html, body {
-                width: 210mm; height: 297mm; margin: 0 !important; padding: 0 !important;
-                background: white !important; overflow: hidden !important;
-                -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
-            }
-            .app-header, .app-nav, .quick-scroll, .preview-toolbar, #view-data, #view-settings, .hide-on-print { display: none !important; }
-            #view-preview {
-                display: block !important; position: absolute !important; left: 0 !important; top: 0 !important;
-                margin: 0 !important; padding: 0 !important; width: 210mm !important; height: 297mm !important;
-                background: white !important;
-            }
+            html, body { width: 210mm; height: 297mm; margin: 0 !important; padding: 0 !important; background: white !important; overflow: hidden !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            .app-header, .app-nav, .quick-scroll, .preview-toolbar, .tab-view:not(#view-preview), .hide-on-print { display: none !important; }
+            #view-preview { display: block !important; position: absolute !important; left: 0 !important; top: 0 !important; margin: 0 !important; padding: 0 !important; width: 210mm !important; height: 297mm !important; background: white !important; }
             .pan-viewport { overflow: visible !important; position: static !important; }
             .canvas-wrapper { margin: 0 !important; padding: 0 !important; display: block !important; position: static !important; transform: none !important; width: 210mm !important; height: 297mm !important; }
             #print-container, #print-container * { box-shadow: none !important; text-shadow: none !important; filter: none !important; outline: none !important; }
-            #print-container {
-                position: absolute !important; left: 0 !important; top: 0 !important;
-                width: 210mm !important; height: 297mm !important; margin: 0 !important; padding: 0 !important;
-                border: none !important; transform: none !important; background-image: inherit !important;
-                background-size: 100% 100% !important; background-repeat: no-repeat !important; background-position: center !important;
-            }
+            #print-container { position: absolute !important; left: 0 !important; top: 0 !important; width: 210mm !important; height: 297mm !important; margin: 0 !important; padding: 0 !important; border: none !important; transform: none !important; background-image: inherit !important; background-size: 100% 100% !important; background-repeat: no-repeat !important; background-position: center !important; }
+        }
+
+        /* ==========================================================================
+           APP 2: KERALA PIN CODE DATABASE (Scoped CSS)
+           ========================================================================== */
+        
+        .pin-app-container {
+            /* M3 Typography Classes for PIN DB */
+            --font-sys: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+        .pin-app-container .display-large { font-family: var(--font-sys); font-size: 57px; line-height: 64px; letter-spacing: -0.25px; font-weight: 700; }
+        .pin-app-container .display-medium { font-family: var(--font-sys); font-size: 45px; line-height: 52px; font-weight: 700; }
+        .pin-app-container .headline-medium { font-family: var(--font-sys); font-size: 28px; line-height: 36px; font-weight: 600; }
+        .pin-app-container .title-large { font-family: var(--font-sys); font-size: 22px; line-height: 28px; font-weight: 600; }
+        .pin-app-container .title-medium { font-family: var(--font-sys); font-size: 16px; line-height: 24px; font-weight: 500; letter-spacing: 0.15px; }
+        .pin-app-container .label-large { font-family: var(--font-sys); font-size: 14px; line-height: 20px; font-weight: 600; letter-spacing: 0.1px; }
+        .pin-app-container .body-medium { font-family: var(--font-sys); font-size: 14px; line-height: 20px; font-weight: 400; letter-spacing: 0.25px; }
+
+        .pin-wrapper { max-width: 1400px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; padding-top: 16px;}
+        
+        .pin-header-card {
+            background-color: var(--md-surface-pin); border-radius: var(--md-shape-xl); padding: 32px;
+            display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 24px; box-shadow: var(--md-elevation-1);
+        }
+        .pin-header-content { display: flex; align-items: center; gap: 24px; }
+        .icon-squircle { width: 72px; height: 72px; background-color: var(--md-primary-container); color: var(--md-on-primary-container); border-radius: var(--md-shape-lg); display: flex; align-items: center; justify-content: center; }
+        .icon-squircle svg { width: 36px; height: 36px; }
+        .stats-badge { background-color: var(--md-tertiary-container); color: var(--md-on-tertiary-container); padding: 16px 24px; border-radius: var(--md-shape-lg); display: flex; flex-direction: column; align-items: flex-end; }
+
+        .controls-card {
+            background-color: var(--md-surface-container-lowest); border-radius: var(--md-shape-full);
+            padding: 8px 16px 8px 32px; display: flex; align-items: center; justify-content: space-between;
+            box-shadow: var(--md-elevation-2); position: relative; z-index: 10;
+        }
+        .search-wrapper { display: flex; align-items: center; gap: 16px; flex: 1; }
+        .search-wrapper svg { width: 28px; height: 28px; color: var(--md-primary); }
+        .search-input { border: none; background: transparent; font-size: 20px; color: var(--md-on-surface); width: 100%; outline: none; font-family: inherit; }
+        .search-input::placeholder { color: var(--md-outline); }
+        .status-chip { background-color: var(--md-secondary-container); color: var(--md-on-secondary-container); padding: 12px 24px; border-radius: var(--md-shape-full); white-space: nowrap; }
+
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 24px; margin-top: 8px; }
+        .data-card {
+            background-color: var(--md-surface-container-lowest); border-radius: var(--md-shape-lg); padding: 24px;
+            box-shadow: var(--md-elevation-1); transition: var(--md-motion-standard); position: relative; overflow: hidden;
+            display: flex; flex-direction: column; gap: 16px; cursor: default;
+        }
+        .data-card:hover { transform: translateY(-4px) scale(1.01); box-shadow: var(--md-elevation-3); background-color: var(--md-surface-pin); }
+        
+        .card-header { display: flex; align-items: flex-start; gap: 16px; }
+        .card-avatar { width: 48px; height: 48px; border-radius: var(--md-shape-md); background-color: var(--md-secondary-container); color: var(--md-on-secondary-container); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .card-avatar svg { width: 24px; height: 24px; }
+        .card-title-area { flex: 1; }
+        .divider { height: 1px; background-color: var(--md-surface-variant); margin: 4px 0; width: 100%; }
+        
+        .card-stepper { display: flex; flex-direction: column; gap: 12px; padding-left: 24px; border-left: 2px dashed var(--md-outline-variant); margin-left: 23px; position: relative; }
+        .step-item { position: relative; }
+        .step-item::before { content: ''; position: absolute; left: -30px; top: 6px; width: 10px; height: 10px; border-radius: 50%; background-color: var(--md-primary); }
+        .step-label { color: var(--md-on-surface-variant); margin-bottom: 2px; }
+        .district-chip { display: inline-block; background-color: var(--md-surface-variant); color: var(--md-on-surface-variant); padding: 4px 12px; border-radius: var(--md-shape-sm); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .massive-pin-container { margin-top: auto; background: linear-gradient(135deg, var(--md-primary-container), var(--md-surface-container-high-pin)); padding: 16px 24px; border-radius: var(--md-shape-md); display: flex; align-items: center; justify-content: space-between; }
+        .pin-label { color: var(--md-on-primary-container); opacity: 0.8; }
+        .massive-pin { color: var(--md-on-primary-container); }
+        .sl-no-badge { position: absolute; top: 24px; right: 24px; background-color: var(--md-surface-variant); color: var(--md-on-surface-variant); padding: 4px 8px; border-radius: var(--md-shape-sm); font-family: monospace; font-weight: bold; }
+
+        .pagination-container { display: flex; align-items: center; justify-content: center; gap: 16px; padding: 24px 0; }
+        .btn-icon-pin { background-color: var(--md-surface-container-highest); color: var(--md-on-surface); border: none; width: 56px; height: 56px; border-radius: var(--md-shape-full); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--md-motion-standard); box-shadow: var(--md-elevation-1); }
+        .btn-icon-pin svg { width: 28px; height: 28px; }
+        .btn-icon-pin:hover:not(:disabled) { background-color: var(--md-primary); color: var(--md-on-primary); box-shadow: var(--md-elevation-3); transform: scale(1.05); }
+        .btn-icon-pin:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
+        .btn-icon-pin:active:not(:disabled) { transform: scale(0.95); }
+        .page-indicator { background-color: var(--md-surface-container-lowest); padding: 16px 32px; border-radius: var(--md-shape-full); box-shadow: var(--md-elevation-1); }
+
+        .empty-state { grid-column: 1 / -1; text-align: center; padding: 64px 24px; background-color: var(--md-surface-container-lowest); border-radius: var(--md-shape-xl); color: var(--md-on-surface-variant); box-shadow: var(--md-elevation-1); }
+        .empty-state svg { width: 80px; height: 80px; margin-bottom: 24px; color: var(--md-outline-variant); }
+
+        @media (max-width: 768px) {
+            .pin-header-card { flex-direction: column; align-items: flex-start; }
+            .stats-badge { width: 100%; align-items: flex-start; }
+            .controls-card { flex-direction: column; border-radius: var(--md-shape-lg); padding: 16px; gap: 16px;}
+            .status-chip { width: 100%; text-align: center; }
         }
     </style>
 </head>
@@ -548,10 +579,10 @@
             </h1>
         </div>
         <div class="header-actions">
-            <button id="btn-undo" class="btn-icon" title="Undo Last Action">
+            <button id="btn-undo" class="btn-icon-top" title="Undo Last Action">
                 <i data-icon="undo"></i>
             </button>
-            <button id="btn-reset" class="btn-icon danger-hover" title="Reset All Data">
+            <button id="btn-reset" class="btn-icon-top danger-hover" title="Reset All Data">
                 <i data-icon="rotate-ccw"></i>
             </button>
             <div class="btn-group">
@@ -579,6 +610,13 @@
                     <div class="nav-content">
                         <i data-icon="file-text"></i>
                         <span class="nav-text">Data</span>
+                    </div>
+                </button>
+                <button onclick="switchTab('pinsearch')" id="nav-pinsearch" class="nav-btn">
+                    <div class="nav-pill"></div>
+                    <div class="nav-content">
+                        <i data-icon="map-pin"></i>
+                        <span class="nav-text">PIN Search</span>
                     </div>
                 </button>
                 <button onclick="switchTab('preview')" id="nav-preview" class="nav-btn">
@@ -629,7 +667,60 @@
                 </div>
             </div>
 
-            <!-- Tab 2: PREVIEW -->
+            <!-- Tab 2: PIN SEARCH (Kerala DB) -->
+            <div id="view-pinsearch" class="tab-view hidden pin-app-container">
+                <div class="pin-wrapper">
+                    <!-- Header -->
+                    <header class="pin-header-card">
+                        <div class="pin-header-content">
+                            <div class="icon-squircle">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M4 20h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2zM20 6l-8 5-8-5h16zM4 18V8l8 5 8-5v10H4z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h1 class="headline-medium">Kerala PIN Code Directory</h1>
+                                <p class="title-medium" style="color: var(--md-outline);">Search & Insert directly to Region Space</p>
+                            </div>
+                        </div>
+                        <div class="stats-badge">
+                            <span class="label-large">Total Authenticated</span>
+                            <span class="display-medium" id="totalCountDisplay">0</span>
+                        </div>
+                    </header>
+
+                    <!-- Search Controls -->
+                    <div class="controls-card">
+                        <div class="search-wrapper">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                            </svg>
+                            <input type="text" id="searchInput" class="search-input" placeholder="Search by Name, District, or PIN code...">
+                        </div>
+                        <div class="status-chip label-large" id="showingCountDisplay">
+                            Loading...
+                        </div>
+                    </div>
+
+                    <!-- Grid Results -->
+                    <main class="grid-container" id="resultsGrid">
+                        <!-- Cards injected via JS -->
+                    </main>
+
+                    <!-- Pagination -->
+                    <footer class="pagination-container" id="paginationControls" style="display: none;">
+                        <button class="btn-icon-pin" id="btnPrev" aria-label="Previous Page">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                        </button>
+                        <div class="page-indicator title-large" id="pageIndicator">Page 1 of 1</div>
+                        <button class="btn-icon-pin" id="btnNext" aria-label="Next Page">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+                        </button>
+                    </footer>
+                </div>
+            </div>
+
+            <!-- Tab 3: PREVIEW -->
             <div id="view-preview" class="tab-view dot-pattern hidden">
                 
                 <div class="preview-toolbar hide-on-print">
@@ -644,12 +735,8 @@
                 </div>
 
                 <div class="mobile-fabs hide-on-print">
-                    <button id="btn-download-png-mobile" class="fab png">
-                        <i data-icon="image"></i>
-                    </button>
-                    <button id="btn-download-pdf-mobile" class="fab pdf">
-                        <i data-icon="file-down"></i>
-                    </button>
+                    <button id="btn-download-png-mobile" class="fab png"><i data-icon="image"></i></button>
+                    <button id="btn-download-pdf-mobile" class="fab pdf"><i data-icon="file-down"></i></button>
                 </div>
 
                 <div id="pan-viewport" class="pan-viewport">
@@ -661,7 +748,7 @@
                 </div>
             </div>
 
-            <!-- Tab 3: SETTINGS -->
+            <!-- Tab 4: SETTINGS -->
             <div id="view-settings" class="tab-view hidden">
                 <div class="container-max">
                     
@@ -788,7 +875,9 @@
             });
         }
 
-        // --- App Logic & State ---
+        // =====================================================================
+        // APP 1 LOGIC (Policy Cover Studio)
+        // =====================================================================
         const A4_WIDTH_PX = 794;
         const A4_HEIGHT_PX = 1123;
 
@@ -807,21 +896,17 @@
             toText: 'To'
         };
 
-        // Perfectly calculated line spacing. Exactly 2.4% interval for all 6 rotated horizontal lines
         const INITIAL_STYLES = {
             amount: { left: 70.38, top: 6.38, fontSize: 23, fontWeight: 'normal', angle: 45, color: '#006666', hasBorder: false, textAlign: 'center', lineHeight: 1.4 },
             vehicleNo: { left: 68.40, top: 39.78, fontSize: 22, fontWeight: 'normal', angle: 90, color: '#006666', hasBorder: false, textAlign: 'center', lineHeight: 1.4 },
             expiryDate: { left: 73.06, top: 66.45, fontSize: 20, fontWeight: 'normal', angle: 90, color: '#006666', hasBorder: false, textAlign: 'center', lineHeight: 1.3 },
             toText: { left: 44.94, top: 62.63, fontSize: 20, fontWeight: 'normal', angle: 90, color: '#006666', hasBorder: false, textAlign: 'center', lineHeight: 1.4 },
-            
-            // Mathematically exact 2.40% step difference from 41.76 to 29.76
             name: { left: 41.76, top: 64.00, fontSize: 16, fontWeight: 'normal', angle: 90, color: '#006666', hasBorder: false, textAlign: 'left', lineHeight: 1.12 },
             address1: { left: 39.36, top: 64.00, fontSize: 16, fontWeight: 'normal', angle: 90, color: '#006666', hasBorder: false, textAlign: 'left', lineHeight: 1.12 },
             address2: { left: 36.96, top: 64.00, fontSize: 16, fontWeight: 'normal', angle: 90, color: '#006666', hasBorder: false, textAlign: 'left', lineHeight: 1.12 },
             address3: { left: 34.56, top: 64.00, fontSize: 16, fontWeight: 'normal', angle: 90, color: '#006666', hasBorder: false, textAlign: 'left', lineHeight: 1.12 },
             statePin: { left: 32.16, top: 64.00, fontSize: 16, fontWeight: 'normal', angle: 90, color: '#006666', hasBorder: false, textAlign: 'left', lineHeight: 1.12 },
             mobile: { left: 29.76, top: 64.00, fontSize: 16, fontWeight: 'normal', angle: 90, color: '#330033', hasBorder: false, textAlign: 'left', lineHeight: 1.12 },
-            
             agentTitle: { left: 67.21, top: 8.74, fontSize: 14, fontWeight: 'bold', angle: 45, color: '#0000ff', hasBorder: false, textAlign: 'center', lineHeight: 1.4 },
             agentDetails: { left: 63.35, top: 11.09, fontSize: 14, fontWeight: 'bold', angle: 45, color: '#0000ff', hasBorder: false, textAlign: 'center', lineHeight: 1.4 },
         };
@@ -845,7 +930,6 @@
         let styles = JSON.parse(JSON.stringify(INITIAL_STYLES));
         let showOutlines = false;
         
-        // --- New Features State ---
         let baseScale = 1;
         let userZoomMultiplier = 1;
         let panX = 0;
@@ -854,8 +938,6 @@
         let historyStack = [];
         let isRestoringState = false;
 
-        // --- Autosave & Undo Logic ---
-        // Using v2 Storage Keys to naturally wipe previous conflicting values saved in browsers
         function saveState() {
             if (isRestoringState) return;
             localStorage.setItem('policyCover_data_v2', JSON.stringify(data));
@@ -869,12 +951,9 @@
                 try {
                     data = JSON.parse(savedData);
                     styles = JSON.parse(savedStyles);
-                    
                     if (!data.address3) data.address3 = INITIAL_DATA.address3;
                     if (!styles.address3) styles.address3 = INITIAL_STYLES.address3;
-                } catch(e) {
-                    console.error("Could not parse saved state.");
-                }
+                } catch(e) { console.error("Could not parse saved state."); }
             }
         }
 
@@ -889,7 +968,6 @@
         function undo() {
             if (historyStack.length === 0) return;
             isRestoringState = true;
-            
             const prevState = historyStack.pop();
             data = prevState.data;
             styles = prevState.styles;
@@ -929,68 +1007,50 @@
         }
 
         document.addEventListener('focusin', (e) => {
-            if (e.target.matches('input, textarea, select')) {
-                pushHistory();
-            }
+            if (e.target.matches('.form-input, .prop-input')) { pushHistory(); }
         });
 
-        // --- Core Responsive Zoom & Panning Logic ---
         function applyCanvasTransform(smooth = false) {
             const wrapper = document.getElementById('canvas-wrapper');
             if (!wrapper) return;
-            
             wrapper.style.transition = smooth ? 'transform 0.2s ease-out' : 'none';
             const totalScale = baseScale * userZoomMultiplier;
             wrapper.style.transform = `translate(calc(-50% + ${panX}px), calc(-50% + ${panY}px)) scale(${totalScale})`;
-            
             document.getElementById('zoom-level').innerText = Math.round(userZoomMultiplier * 100) + '%';
         }
 
         function calculateBaseScale() {
             const viewport = document.getElementById('pan-viewport');
             if (!viewport || viewport.clientWidth === 0) return;
-            
             const padding = window.innerWidth < 640 ? 32 : 64;
             const availableWidth = viewport.clientWidth - padding;
-            
             baseScale = Math.min(1, availableWidth / A4_WIDTH_PX);
             applyCanvasTransform(true);
         }
 
-        // Setup Pan & Zoom Interactions
         function setupPanZoom() {
             const panViewport = document.getElementById('pan-viewport');
             let isPanning = false;
-            let startPanX = 0;
-            let startPanY = 0;
+            let startPanX = 0; let startPanY = 0;
             let initialPointers = [];
-            let initialPinchDist = 0;
-            let initialPinchZoom = 1;
+            let initialPinchDist = 0; let initialPinchZoom = 1;
 
-            // Mouse Wheel Zoom
             panViewport.addEventListener('wheel', (e) => {
                 e.preventDefault();
                 const zoomSensitivity = 0.0015;
-                const delta = -e.deltaY * zoomSensitivity;
-                
-                let newZoom = userZoomMultiplier * (1 + delta);
+                let newZoom = userZoomMultiplier * (1 + (-e.deltaY * zoomSensitivity));
                 newZoom = Math.max(0.25, Math.min(5, newZoom));
-                
                 userZoomMultiplier = newZoom;
                 applyCanvasTransform(false);
             }, { passive: false });
 
-            // Touch & Mouse Drag / Pinch
             panViewport.addEventListener('pointerdown', (e) => {
                 if (isEditMode && e.target.closest('.draggable-el')) return;
-                
                 if (e.pointerType === 'mouse' && e.button !== 0) return;
                 e.preventDefault(); 
                 
                 const existingPointer = initialPointers.find(p => p.id === e.pointerId);
-                if(!existingPointer) {
-                    initialPointers.push({ id: e.pointerId, x: e.clientX, y: e.clientY });
-                }
+                if(!existingPointer) initialPointers.push({ id: e.pointerId, x: e.clientX, y: e.clientY });
                 
                 if (initialPointers.length === 1) {
                     isPanning = true;
@@ -999,30 +1059,20 @@
                     panViewport.setPointerCapture(e.pointerId);
                 } else if (initialPointers.length === 2) {
                     isPanning = false; 
-                    initialPinchDist = Math.hypot(
-                        initialPointers[0].x - initialPointers[1].x,
-                        initialPointers[0].y - initialPointers[1].y
-                    );
+                    initialPinchDist = Math.hypot(initialPointers[0].x - initialPointers[1].x, initialPointers[0].y - initialPointers[1].y);
                     initialPinchZoom = userZoomMultiplier;
                 }
             });
 
             panViewport.addEventListener('pointermove', (e) => {
                 const pointerIndex = initialPointers.findIndex(p => p.id === e.pointerId);
-                if (pointerIndex !== -1) {
-                    initialPointers[pointerIndex].x = e.clientX;
-                    initialPointers[pointerIndex].y = e.clientY;
-                }
+                if (pointerIndex !== -1) { initialPointers[pointerIndex].x = e.clientX; initialPointers[pointerIndex].y = e.clientY; }
 
                 if (isPanning && initialPointers.length === 1) {
-                    panX = e.clientX - startPanX;
-                    panY = e.clientY - startPanY;
+                    panX = e.clientX - startPanX; panY = e.clientY - startPanY;
                     applyCanvasTransform(false);
                 } else if (initialPointers.length === 2) {
-                    const dist = Math.hypot(
-                        initialPointers[0].x - initialPointers[1].x,
-                        initialPointers[0].y - initialPointers[1].y
-                    );
+                    const dist = Math.hypot(initialPointers[0].x - initialPointers[1].x, initialPointers[0].y - initialPointers[1].y);
                     let newZoom = initialPinchZoom * (dist / initialPinchDist);
                     newZoom = Math.max(0.25, Math.min(5, newZoom));
                     userZoomMultiplier = newZoom;
@@ -1032,12 +1082,10 @@
 
             function stopPointer(e) {
                 initialPointers = initialPointers.filter(p => p.id !== e.pointerId);
-                if (initialPointers.length === 0) {
-                    isPanning = false;
-                } else if (initialPointers.length === 1) {
+                if (initialPointers.length === 0) { isPanning = false; } 
+                else if (initialPointers.length === 1) {
                     isPanning = true;
-                    startPanX = initialPointers[0].x - panX;
-                    startPanY = initialPointers[0].y - panY;
+                    startPanX = initialPointers[0].x - panX; startPanY = initialPointers[0].y - panY;
                 }
             }
 
@@ -1046,53 +1094,32 @@
             panViewport.addEventListener('pointerleave', stopPointer);
         }
 
-        // Quick Vertical Scroll Assistant Logic (for Data & Settings Tabs)
         function scrollActiveTab(direction) {
             const activeTab = document.querySelector('.tab-view:not(.hidden)');
             if(!activeTab) return;
             const scrollAmount = window.innerHeight * 0.5;
-            if (direction === -1) {
-                activeTab.scrollBy({ top: -scrollAmount, behavior: 'smooth' });
-            } else {
-                activeTab.scrollBy({ top: scrollAmount, behavior: 'smooth' });
-            }
+            if (direction === -1) activeTab.scrollBy({ top: -scrollAmount, behavior: 'smooth' });
+            else activeTab.scrollBy({ top: scrollAmount, behavior: 'smooth' });
         }
 
         function updateQuickScrollVisibility() {
             const activeTab = document.querySelector('.tab-view:not(.hidden)');
             const quickScroll = document.getElementById('quickScrollNav');
-            
             if (!activeTab || activeTab.id === 'view-preview') {
-                quickScroll.classList.remove('visible');
-                return;
+                quickScroll.classList.remove('visible'); return;
             }
-            
-            if (activeTab.scrollHeight > activeTab.clientHeight + 20) {
-                quickScroll.classList.add('visible');
-            } else {
-                quickScroll.classList.remove('visible');
-            }
+            if (activeTab.scrollHeight > activeTab.clientHeight + 20) quickScroll.classList.add('visible');
+            else quickScroll.classList.remove('visible');
         }
 
-        window.addEventListener('resize', () => {
-            calculateBaseScale();
-            updateQuickScrollVisibility();
-        });
+        window.addEventListener('resize', () => { calculateBaseScale(); updateQuickScrollVisibility(); });
 
-        // --- PDF Extraction Parser ---
         function parseInsuranceData(text) {
             pushHistory(); 
-            
             let name = "", addressRaw = "", state = "KERALA", pin = "", vehicle = "", expiry = "", amount = "", mobile = "";
-
-            const vehicleMatch = text.match(/[A-Z]{2}-\d{2}-[A-Z]?-?\d+/);
-            if (vehicleMatch) vehicle = vehicleMatch[0];
-
+            const vehicleMatch = text.match(/[A-Z]{2}-\d{2}-[A-Z]?-?\d+/); if (vehicleMatch) vehicle = vehicleMatch[0];
             const nameMatch = text.match(/(?:Customer|Custorner)\s+Name\s*:\s*([A-Z\s\.\,]+)/i) || text.match(/\bName\s*:\s*([A-Z\s\.\,]+)/i);
-            if (nameMatch) {
-                name = nameMatch[1].trim();
-                name = name.split(/Address/i)[0].trim();
-            }
+            if (nameMatch) { name = nameMatch[1].trim(); name = name.split(/Address/i)[0].trim(); }
 
             let customerSection = text;
             const nameIndex = text.search(/(?:Customer|Custorner)\s+Name/i);
@@ -1100,22 +1127,14 @@
 
             const addressBlockMatch = customerSection.match(/Address\s*:\s*([\s\S]*?)(?:शहर\/City|City|फोन|Phone|सेल\/Cell)/i);
             if (addressBlockMatch) addressRaw = addressBlockMatch[1].replace(/\n/g, ",").replace(/,,+/g, ",").trim();
-
             const stateMatch = customerSection.match(/राज्य\/State\s*:\s*([A-Z]+)/i);
             if (stateMatch) state = stateMatch[1].trim();
-            
             const pinMatch = customerSection.match(/(?:पिन\s*\/\s*PIN|PIN)\s*:\s*(\d{6})/i) || customerSection.match(/\b(\d{6})\b/);
             if (pinMatch) pin = pinMatch[1] || pinMatch[0];
-
             const phoneMatch = customerSection.match(/(?:फोन\s*Phone|सेल\/Cell)\s*:\s*([*\d\s]+)/i);
-            if (phoneMatch) {
-                mobile = phoneMatch[1].trim();
-                if (mobile.replace(/\s/g, '') === "******38") mobile = "***** ***38";
-            }
-
+            if (phoneMatch) { mobile = phoneMatch[1].trim(); if (mobile.replace(/\s/g, '') === "******38") mobile = "***** ***38"; }
             const expiryMatch = text.match(/(?:Midnight of|to midnight of)\s*(\d{2}\/\d{2}\/\d{4})/i) || text.match(/Date of expiry.*?(\d{2}\/\d{2}\/\d{4})/i);
             if (expiryMatch) expiry = expiryMatch[1];
-
             const amountMatch = text.match(/(?:NET PAYABLE|Total Amount|कुल राशि Total Amount).*?(\d{1,3}(?:,\d{3})*)/i);
             if (amountMatch) amount = amountMatch[1];
 
@@ -1125,27 +1144,19 @@
 
         function fillEnvelope(name, addressRaw, state, pin, vehicle, expiry, amount, mobile) {
             if (name) data.name = name + ",";
-            
             if (addressRaw) {
                 addressRaw = addressRaw.replace(/,\s*$/, "");
                 const parts = addressRaw.split(",").map(s => s.trim()).filter(Boolean);
                 if (parts.length > 0) data.address1 = parts[0] + ",";
-                
                 if (parts.length > 1) {
                     let poIndex = parts.findIndex(p => p.toUpperCase().includes('P.O'));
                     if (poIndex === -1) poIndex = 1; 
-
                     data.address2 = parts.slice(1, poIndex + 1).join(",") + ",";
-
                     let remainingParts = parts.slice(poIndex + 1);
-                    if (remainingParts.length > 0) {
-                        data.address3 = remainingParts.join(",") + ",";
-                    } else {
-                        data.address3 = "";
-                    }
+                    if (remainingParts.length > 0) data.address3 = remainingParts.join(",") + ",";
+                    else data.address3 = "";
                 }
             }
-            
             if (state || pin) data.statePin = `${state || 'KERALA'}.PΙΝ. ${pin}.`;
             if (vehicle) data.vehicleNo = vehicle;
             if (expiry) data.expiryDate = "Expiry Date\n" + expiry;
@@ -1157,8 +1168,7 @@
                 if (input) {
                     input.value = data[key];
                     if(input.tagName.toLowerCase() === 'textarea') {
-                        input.style.height = 'auto';
-                        input.style.height = input.scrollHeight + 'px';
+                        input.style.height = 'auto'; input.style.height = input.scrollHeight + 'px';
                     }
                 }
             });
@@ -1168,7 +1178,6 @@
         function showFeedback(message, type = 'success') {
             const fb = document.getElementById('pdf-feedback');
             const iconWrap = document.createElement('div');
-            
             fb.classList.remove('hidden', 'feedback-success', 'feedback-error');
             
             if (type === 'success') {
@@ -1181,10 +1190,8 @@
             
             const existingIcon = document.getElementById('pdf-feedback-icon');
             if(existingIcon) existingIcon.replaceWith(iconWrap.firstChild);
-            
             document.getElementById('pdf-feedback-text').innerText = message;
             renderIcons(fb);
-
             setTimeout(() => fb.classList.add('hidden'), 4000);
         }
 
@@ -1203,20 +1210,19 @@
 
         function switchTab(tabId) {
             document.getElementById('view-data').classList.add('hidden');
+            document.getElementById('view-pinsearch').classList.add('hidden');
             document.getElementById('view-preview').classList.add('hidden');
             document.getElementById('view-settings').classList.add('hidden');
             document.getElementById(`view-${tabId}`).classList.remove('hidden');
 
-            ['data', 'preview', 'settings'].forEach(t => {
+            ['data', 'pinsearch', 'preview', 'settings'].forEach(t => {
                 const btn = document.getElementById(`nav-${t}`);
                 if(t === tabId) btn.classList.add('active');
                 else btn.classList.remove('active');
             });
 
             setTimeout(() => {
-                if(tabId === 'preview') {
-                    calculateBaseScale();
-                }
+                if(tabId === 'preview') calculateBaseScale();
                 updateQuickScrollVisibility();
             }, 10);
         }
@@ -1235,54 +1241,36 @@
 
             if (isHoverableOutline) {
                 el.classList.add('guide-active');
-                el.style.padding = '8px';
-                el.style.borderRadius = '12px';
-                el.style.display = 'block';
+                el.style.padding = '8px'; el.style.borderRadius = '12px'; el.style.display = 'block';
             } else {
                 el.classList.remove('guide-active');
                 if (style.hasBorder) {
-                    el.style.display = 'flex';
-                    el.style.alignItems = 'center';
+                    el.style.display = 'flex'; el.style.alignItems = 'center';
                     el.style.justifyContent = textAlign === 'center' ? 'center' : (textAlign === 'right' ? 'flex-end' : 'flex-start');
-                    el.style.padding = '12px 28px'; 
-                    el.style.borderRadius = '16px';
-                    el.style.width = 'max-content'; 
+                    el.style.padding = '12px 28px'; el.style.borderRadius = '16px'; el.style.width = 'max-content'; 
                 } else {
-                    el.style.display = 'block';
-                    el.style.padding = '0';
-                    el.style.borderRadius = '0';
-                    el.style.width = 'auto';
+                    el.style.display = 'block'; el.style.padding = '0'; el.style.borderRadius = '0'; el.style.width = 'auto';
                 }
             }
 
-            el.style.left = `${style.left}%`;
-            el.style.top = `${style.top}%`;
+            el.style.left = `${style.left}%`; el.style.top = `${style.top}%`;
             el.style.transform = `translate(${translateX}, -50%) rotate(${style.angle}deg)`;
-            el.style.transformOrigin = transformOrigin;
-            el.style.fontSize = `${style.fontSize}px`;
-            el.style.fontWeight = style.fontWeight;
-            el.style.color = style.color || 'black';
+            el.style.transformOrigin = transformOrigin; el.style.fontSize = `${style.fontSize}px`;
+            el.style.fontWeight = style.fontWeight; el.style.color = style.color || 'black';
             el.style.border = style.hasBorder ? `3px solid ${style.color || 'black'}` : 'none';
-            el.style.textAlign = textAlign;
-            el.style.lineHeight = style.lineHeight || 1.4;
+            el.style.textAlign = textAlign; el.style.lineHeight = style.lineHeight || 1.4;
             el.innerText = data[key];
         }
 
         function updateAllCanvasStyles() { Object.keys(data).forEach(key => updateCanvasElementStyle(key)); }
 
-        // --- Component Builders (HTML Generation) ---
         function buildDataCard(config) {
             const { label, key, isTextarea } = config;
-            
             const inputElement = isTextarea 
                 ? `<textarea id="input-data-${key}" class="form-input" rows="3" placeholder="Your answer" oninput="this.style.height = 'auto'; this.style.height = this.scrollHeight + 'px'"></textarea>`
                 : `<input type="text" id="input-data-${key}" class="form-input" placeholder="Your answer" />`;
 
-            return `
-            <div class="form-card">
-                <div class="form-card-title">${label} <span style="color: #dc2626;">*</span></div>
-                ${inputElement}
-            </div>`;
+            return `<div class="form-card"><div class="form-card-title">${label} <span style="color: #dc2626;">*</span></div>${inputElement}</div>`;
         }
 
         function buildSettingsCard(config) {
@@ -1297,7 +1285,6 @@
                         <div class="settings-icon"><i data-icon="${iconName}"></i></div>
                         <h3>${label}</h3>
                     </div>
-                    
                     <div class="settings-controls">
                         <input type="color" id="input-color-${key}" value="${style.color}" class="color-picker" title="Text Color" />
                         <div class="control-divider"></div>
@@ -1310,33 +1297,18 @@
                         </label>
                     </div>
                 </div>
-
                 <div class="props-grid">
-                    <div class="prop-item">
-                        <label class="prop-label">X (%)</label>
-                        <input type="number" step="0.1" id="input-x-${key}" value="${style.left.toFixed(2)}" class="prop-input" />
-                    </div>
-                    <div class="prop-item">
-                        <label class="prop-label">Y (%)</label>
-                        <input type="number" step="0.1" id="input-y-${key}" value="${style.top.toFixed(2)}" class="prop-input" />
-                    </div>
-                    <div class="prop-item">
-                        <label class="prop-label">Size</label>
-                        <input type="number" step="1" id="input-size-${key}" value="${style.fontSize}" class="prop-input" />
-                    </div>
-                    <div class="prop-item">
-                        <label class="prop-label">Ang(°)</label>
-                        <input type="number" step="1" id="input-angle-${key}" value="${style.angle}" class="prop-input" />
-                    </div>
-                    <div class="prop-item">
-                        <label class="prop-label">Weight</label>
+                    <div class="prop-item"><label class="prop-label">X (%)</label><input type="number" step="0.1" id="input-x-${key}" value="${style.left.toFixed(2)}" class="prop-input" /></div>
+                    <div class="prop-item"><label class="prop-label">Y (%)</label><input type="number" step="0.1" id="input-y-${key}" value="${style.top.toFixed(2)}" class="prop-input" /></div>
+                    <div class="prop-item"><label class="prop-label">Size</label><input type="number" step="1" id="input-size-${key}" value="${style.fontSize}" class="prop-input" /></div>
+                    <div class="prop-item"><label class="prop-label">Ang(°)</label><input type="number" step="1" id="input-angle-${key}" value="${style.angle}" class="prop-input" /></div>
+                    <div class="prop-item"><label class="prop-label">Weight</label>
                         <select id="input-weight-${key}" class="prop-input prop-select">
                             <option value="normal" ${style.fontWeight === 'normal' ? 'selected' : ''}>Norm</option>
                             <option value="bold" ${style.fontWeight === 'bold' ? 'selected' : ''}>Bold</option>
                         </select>
                     </div>
-                    <div class="prop-item">
-                        <label class="prop-label">Align</label>
+                    <div class="prop-item"><label class="prop-label">Align</label>
                         <select id="input-align-${key}" class="prop-input prop-select">
                             <option value="left" ${style.textAlign === 'left' ? 'selected' : ''}>Left</option>
                             <option value="center" ${style.textAlign === 'center' ? 'selected' : ''}>Cent</option>
@@ -1349,14 +1321,11 @@
 
         function initApp() {
             renderIcons();
-
             const dataContainer = document.getElementById('data-fields-container');
             const settingsContainer = document.getElementById('settings-fields-container');
             const canvasContainer = document.getElementById('print-container');
             
-            dataContainer.innerHTML = '';
-            settingsContainer.innerHTML = '';
-            canvasContainer.innerHTML = '';
+            dataContainer.innerHTML = ''; settingsContainer.innerHTML = ''; canvasContainer.innerHTML = '';
 
             FIELD_CONFIGS.forEach(config => {
                 const { key } = config;
@@ -1364,82 +1333,58 @@
                 settingsContainer.insertAdjacentHTML('beforeend', buildSettingsCard(config));
 
                 const el = document.createElement('div');
-                el.id = `canvas-${key}`;
-                el.className = 'draggable-el';
+                el.id = `canvas-${key}`; el.className = 'draggable-el';
                 canvasContainer.appendChild(el);
 
                 const dataInput = document.getElementById(`input-data-${key}`);
                 if (dataInput) {
                     dataInput.value = data[key];
                     if(dataInput.tagName.toLowerCase() === 'textarea') {
-                        dataInput.style.height = 'auto';
-                        dataInput.style.height = dataInput.scrollHeight + 'px';
+                        dataInput.style.height = 'auto'; dataInput.style.height = dataInput.scrollHeight + 'px';
                     }
                 }
-
                 updateCanvasElementStyle(key);
 
-                // --- Events Binding ---
+                // Events
                 dataInput.addEventListener('input', (e) => {
-                    data[key] = e.target.value;
-                    updateCanvasElementStyle(key);
-                    saveState();
+                    data[key] = e.target.value; updateCanvasElementStyle(key); saveState();
                 });
 
                 const bindStyle = (id, prop, isFloat = false) => {
                     document.getElementById(id).addEventListener('input', (e) => {
                         styles[key][prop] = isFloat ? parseFloat(e.target.value) || 0 : e.target.value;
-                        updateCanvasElementStyle(key);
-                        saveState();
+                        updateCanvasElementStyle(key); saveState();
                     });
                 };
-
                 bindStyle(`input-color-${key}`, 'color');
                 bindStyle(`input-size-${key}`, 'fontSize', true);
                 bindStyle(`input-angle-${key}`, 'angle', true);
                 bindStyle(`input-weight-${key}`, 'fontWeight');
                 bindStyle(`input-align-${key}`, 'textAlign');
                 
-                document.getElementById(`input-x-${key}`).addEventListener('input', (e) => {
-                    styles[key].left = parseFloat(e.target.value) || 0;
-                    updateCanvasElementStyle(key);
-                    saveState();
-                });
-                document.getElementById(`input-y-${key}`).addEventListener('input', (e) => {
-                    styles[key].top = parseFloat(e.target.value) || 0;
-                    updateCanvasElementStyle(key);
-                    saveState();
-                });
-
+                document.getElementById(`input-x-${key}`).addEventListener('input', (e) => { styles[key].left = parseFloat(e.target.value) || 0; updateCanvasElementStyle(key); saveState(); });
+                document.getElementById(`input-y-${key}`).addEventListener('input', (e) => { styles[key].top = parseFloat(e.target.value) || 0; updateCanvasElementStyle(key); saveState(); });
                 document.getElementById(`input-border-${key}`).addEventListener('change', (e) => {
                     styles[key].hasBorder = e.target.checked;
                     const track = document.getElementById(`border-bg-${key}`);
-                    if(styles[key].hasBorder) track.classList.add('active');
-                    else track.classList.remove('active');
-                    updateCanvasElementStyle(key);
-                    saveState();
+                    if(styles[key].hasBorder) track.classList.add('active'); else track.classList.remove('active');
+                    updateCanvasElementStyle(key); saveState();
                 });
 
-                // Element Dragging Logic
+                // Drag
                 el.addEventListener('pointerdown', (e) => {
                     if (!isEditMode) return; 
                     if (e.pointerType === 'mouse' && e.button !== 0) return;
-                    e.preventDefault();
-                    e.stopPropagation(); // Stop PanViewport from grabbing it
-                    
-                    pushHistory();
-                    el.setPointerCapture(e.pointerId);
+                    e.preventDefault(); e.stopPropagation(); 
+                    pushHistory(); el.setPointerCapture(e.pointerId);
 
-                    const startX = e.clientX;
-                    const startY = e.clientY;
-                    const startLeft = styles[key].left;
-                    const startTop = styles[key].top;
+                    const startX = e.clientX; const startY = e.clientY;
+                    const startLeft = styles[key].left; const startTop = styles[key].top;
 
                     const onPointerMove = (moveEvent) => {
                         const totalScale = baseScale * userZoomMultiplier;
                         const deltaX = (moveEvent.clientX - startX) / totalScale;
                         const deltaY = (moveEvent.clientY - startY) / totalScale;
-
                         const deltaXPercent = (deltaX / A4_WIDTH_PX) * 100;
                         const deltaYPercent = (deltaY / A4_HEIGHT_PX) * 100;
 
@@ -1448,7 +1393,6 @@
 
                         document.getElementById(`input-x-${key}`).value = styles[key].left.toFixed(2);
                         document.getElementById(`input-y-${key}`).value = styles[key].top.toFixed(2);
-                        
                         updateCanvasElementStyle(key);
                     };
 
@@ -1459,91 +1403,219 @@
                         el.removeEventListener('pointercancel', onPointerUp);
                         saveState(); 
                     };
-
                     el.addEventListener('pointermove', onPointerMove);
                     el.addEventListener('pointerup', onPointerUp);
                     el.addEventListener('pointercancel', onPointerUp);
                 });
             });
 
-            renderIcons(dataContainer);
-            renderIcons(settingsContainer);
-            setupPanZoom();
-            switchTab('data');
+            renderIcons(dataContainer); renderIcons(settingsContainer);
+            setupPanZoom(); switchTab('data');
             
             document.querySelectorAll('.tab-view').forEach(tab => {
                 tab.addEventListener('scroll', updateQuickScrollVisibility, {passive: true});
             });
         }
 
-        // --- Execution ---
+
+        // =====================================================================
+        // APP 2 LOGIC (Kerala Post Office Directory / PIN Search)
+        // =====================================================================
+        const dbRaw = {
+            "ALAPPUZHA": ["ALAPPUZHA,689126","ANGADICAL CHENGANNUR,689122","CHENGANNUR,689121","CHENGANNUR RS,689121","CHERIYANADU,689511","EDATHUA,689573","KALLISSERI,689124","MUTTAR,689574","PANDANAD,689506","PARUMALA,689626","PULIYOOR,689510","PUTHENCAVU,689123","RAMANKARY,689595","THALAVADY,689572","TIRUVANVANDUR,689109","VALANJAVATTOM,689104","VELIYANADU,689590"],
+            "ALLAPUZHA": ["ALAPPUZHA BAZAR,688012","ALAPPUZHA COLLECTORATE,688001","ALAPPUZHA DISTRICT HOSPITAL,688011","ALAPPUZHA HO,688001","ALAPPUZHA IRON BRIDGE,688011","ALAPPUZHA MEDICAL COLLEGE,688005","ALAPPUZHA MULLACKAL,688011","ALAPPUZHA NORTH,688007","AMBALAPUZHA,688561","AROOKUTTY,688535","AROOR,688534","ARTHINKAL,688530","AVALUKUNNU,688006","CHAMPAKULAM,688505","CHARUMOODU,690505","CHENNITHALA,690105","CHEPPAUD,690507","CHERTHALA CUTCHERRY,688524","CHERTHALA HO,688524","CHERUKOLE,690104","CHETTICULANGARA,690106","CHINGOLI,690532","CHUNAKARA,690534","ENNAKKAD,689624","ERAMULLUR,688537","HARIPAD,690514","KADAKKARAPALLY,688529","KAINAKARY,688501","KALAVOOR,688522","KALLUMALA,690110","KANDALLUR,690535","KARAKKAD,689504","KAREELAKULANGARA,690572","KARTHIGAPPALLY,690516","KARUVATTA,690517","KAVALAM,688506","KAYANGULAM,690502","KAYANGULAM COLLEGE,690502","KEERIKAD,690508","KODUKULANJI,689508","KOLLAKADAVU,690509","KOZHUVALLUR,689521","KRISHNAPURAM(KERALA),690533","KUDASSANAD,689512","KUMARAPURAM,690548","KUTHIATHODE,688533","KUTTEMPERUR,689623","MANKAMKUZHY,690558","MANNANCHERRY,688538","MANNAR,689622","MAVELIKARA COURT,690101","MAVELIKARA CUTCHERRY,690101","MAVELIKARA HO,690101","MAYITHARA MARKET,688539","MELPADOM,689627","MONCOMBU,688502","MONCOMBU THEKKEKARA,688503","MUHAMMA,688525","MULAKUZHA,689505","MUTHUKULAM SOUTH,690506","MUTTOM-ALLEPPEY,690511","NANGIARKULANGARA,690513","NOORANAD SANATORIUM,690571","NOORNAD,690504","OLAKETTIAMBALAM,690510","PADANILAM,690529","PALLICKAL,690503","PALLIPAD,690512","PALLIPURAM,688541","PATHIRAPPALLY,688521","PATTANACAUD,688531","PATTOLIMARKET,690531","PAZHAVEEDU,688009","PENNUKKARA,689520","PERUMBALAM,688570","PERUNGALA,690559","POOCHACKAL,688526","PULINCUNNU,688504","PULLIKANAKKU,690537","PUNNAPRA,688004","PUNNAPRA NORTH,688014","PUTHUPPALLY SO,690527","SANATHANAPURAM,688003","SETHULEKSHMIPURAM,688523","SREENARAYAPURAM,688582","THAKAZHY,688562","THAMARAKULAM,690530","THANNEERMUKKOM,688527","THATHAMPALLY,688013","THATTARAMBALAM,690103","THAZHAKARA,690102","THEKKEKARA,690107","THIRUMALABHAGOM,688540","THIRUVAMPADY JUNCTION,688002","THONDANKULANGARA,688013","THRIKKUNNAPUZHA,690515","THUMPOLY,688008","THURAVOOR,688532","THYCATTUSSERY,688528","VALLIKUNNAM,690501","VARANAM,688555","VAYALAR,688536","VENMONY,689509"],
+            "CALICUT": ["ARAKKINAR SO,673028","ATHOLI,673315","AZHIYUR,673309","BALUSSERI,673612","BEYPORESO,673015","CALICUT ARTS COLLEGE,673018","CALICUT BEACH SO,673032","CALICUT CITY SO,673001","CALICUT CIVIL STATION HPO,673020","CALICUT COLLECTORATE,673020","CALICUT COURTS SO,673032","CALICUT HPO,673001","CALICUT MEDICAL COLLEGE MDG,673008","CALICUT RS,673001","CHALAPURAM SO,673002","CHALIYAM SO,673301","CHELANNUR SO,673616","CHEMANCHERI,673304","CHERUVANNUR,673655","CHEVAYUR,673017","CHOMBALA,673308","CHORODE,673106","EAST HILL,673005","EDACHERI,673502","EDAKULAM,673306","ELATHUR SO,673303","ERANHIPALAM SO,673006","FEROKE COLLEGE SO,673632","FEROKE MDG,673631","FEROKE PETTA,673631","GA COLLEGE,673014","IIM CAMPUS KOZHIKODE,673570","IRINGAL,673521","KADALUNDI,673302","KAKKATTIL,673507","KAKKAYAM,673615","KAKKOTI SO,673611","KALLACHI,673506","KALLAI,673003","KARAPARAMBA,673010","KAVILAMPARA,673513","KAYANNA,673526","KOLATHARA,673655","KOLLAM,673307","KOORACHUNDU,673527","KOTENCHERI,673580","KOTUVALLI,673572","KOYILANDY,673305","KUNDUNGAL,673003","KUNNAMANGALAM MDG,673571","KUTARANNI,673604","KUTHIRAVATTAM,673016","KUTTIADI,673508","MADAPPALLYCOLLEGE,673102","MAHE,673310","MALAPARAMBASO,673009","MANKAVU SO,673007","MANNUR SO,673328","MARIKKUNNU SO,673012","MAVOOR SO,673661","MEPPAYUR,673524","MOKKAM,673602","NADAKKAVU,673011","NADAPURAM,673504","NADUVANNUR,673614","NALLALAM,673027","NANMINDA,673613","NARIKKUNI,673585","NIT CAMPUS,673601","NUT STREET,673104","OMASSERI,673582","ORKATTERI,673501","PANTHEERANKAVU SO,673019","PARAKKADAVU,673509","PARAPPIL SO,673001","PAYYOLI,673522","PAYYOLI ANGADI,673523","PERAMPRA.MDG,673525","PERUVANNAMUZHI,673528","PUDUPADI,673586","PUDUPPANAM,673105","PURAMERI,673503","PUTHIYANGADI SO,673021","PUTHIYARA SO,673004","QUILANDIBAZAR,673620","RAMANATTUKARA SO,673633","TALAKOLATHUR,673317","TALI SO,673002","TAMARACHERI,673573","THIRUVALLUR,673541","THIRUVANNUR NADA SO,673029","TIKKOTI,673529","TIRUVAMBADI PO,673603","TUNERI,673505","UNNIKULAM,673574","VADAKARA,673101","VADAKARA BEACH,673103","VALAYAM,673517","VELLAYIL,673011","VILLIAPPALLY,673542","WEST HILL BEACH,673005","WESTHILL MDG,673005"],
+            "ERNAKULAM": ["AGATHI,682553","AIMS PONEKKARA,682041","ALANGAD,683511","ALUVA,683101","ALUVA BAZAR,683101","ALUVA TOWN BUS STAND,683101","AMBALAMEDU,682303","AMBALAMUGAL,682302","AMINI,682552","ANGAMALLY SOUTH,683573","ANGAMALY,683572","ARAKUNNAM,682313","ARAKUZHA,686672","ASAMANNOOR,683549","ATHANI(ERNAKULAM),683585","AYYAMPILLY,682501","BINANIPURAM,683502","CN BASE,682004","CHANGAMPUZHA NAGAR,682033","CHELAD JUNCTION,686681","CHENDAMANGALAM,683512","CHENGAMANAD,683578","CHERAI,683514","CHERANALLUR,682034","CHITTOOR-EKM,682027","CHOTTANIKKARA,682312","CHOWARA,683571","CSEZ,682037","EDAKOCHI,682010","EDAPPALLY MDG,682024","EDATHALA,683561","EDAVANAKAD,682502","EKM HIGH COURT,682031","EKM NORTH,682018","ELAMAKKARA,682026","ELAMKUNNAPUZHA,682503","ELANJI,686665","ERNAKULAM COLLEGE,682035","ERNAKULAM HINDI PRACHAR SABHA,682016","ERNAKULAM HPO,682011","EROOR,682306","ERUMATHALA,683112","HMT COLONY,683503","Infopark Kochi,682042","IRIMBANAM,682309","KADAMATH,682556","KADAVANTHRA,682020","KAITHARAM,683519","KAKKANAD,682030","KALADY MDG,683574","KALAMASSERY,683104","KALLOORKKAD,686668","KALOOR,682017","KANJIRAMATTOM,682315","KANJOOR,683575","KANNAMALI,682008","KARUKUTTY,683576","KAVARATTI,682555","KEEZHILLAM,683541","KIZHAKKAMBALAM,683562","KOCHI AIRPORT,683111","KOCHI HO,682001","KOCHI MG ROAD,682016","KOCHI UNIVERSITY,682022","KOLENCHERRY,682311","KOONAMMAVU,683518","KOOTHATTUKULAM,686662","KOOVAPPADY,683544","KOTHAMANGALAM COLLEGE,686666","KOTHAMANGALAM MDG,686691","KUMARAPURAM(ERNAKULAM),683565","KUMBALANGI,682007","KUNNACKAL,682316","KUNNAM(ALAPPUZHA),690108","KURUMASSERY,683579","KURUPPAMPADY,683545","MALAYATTOOR,683587","MALIPURAM,682511","MANJAPRA,683581","MANNAM PARAVUR,683520","MARADU,682304","MATSYAPURI,682029","MATTANCHERRY,682002","MATTANCHERRY JETTY,682002","MATTANCHERRY TOWN,682002","MEKKAD,683589","MINICOY,682559","MOOKKANNUR,683577","MOOTHAKUNNAM,683516","MUDAVOOR,686669","MUDIKKAL,683547","MULANTHURUTHY,682314","MULAVUKAD,682504","MUNDAMVELI,682507","MUPPATHADAM,683110","MUVATTUPUZHA,686661","MUVATTUPUZHA MARKET,686673","NARAKKAL,682505","NAVAL ARMAMENT DEPOT-ALUVA,683563","NAYARAMBALAM,682509","NELLIMATTAM,686693","NETTOOR,682040","NORTH END,682009","OCHANTHURUTH,682508","OKKAL,683550","PACHALAM,682012","PALARIVATTOM,682025","PALLIPORT,683515","PALLURUTHY MDG,682006","PAMPAKUDA,686667","PANAMPILLY NAGAR,682036","PANANGAD,682506","PANAYAPPILLY,682002","PARAVUR,683513","PARAVUR MARKET,683513","PARAVUR TOWN,683513","PERUMANNUR,682015","PERUMBAVOOR,683542","PERUMBAVOOR SOUTH,683542","PIRAVOM,686664","POONITHURA,682038","POTHANICAUD,686671","PUTHENCRUZ MDG,682308","PUTHENVELIKKARA,683594","RAJAGIRI VALLEY,682039","RAMAMANGALAM,686663","RAYONPURAM,683543","SHANMUGHAM ROAD,682031","SREEMOOLANAGARAM,683580","THAIKKATTUKARA,683106","THAMMANAM,682032","THEVARA,682013","THIRUVANKULAM,682305","THOPPUMPADY,682005","THOTTAKKATUKARA,683108","THOTTUMUGHOM,683105","THRIKKAKARA,682021","THRIKKARIYOOR,686692","TRIPUNITHURA FORT,682301","TRIPUNITHURA MDG,682301","UC COLLEGE,683102","UDAYAMPEROOR,682307","UDYOGAMANDAL,683501","VADAKKEKARA,683522","VADAKKUMPURAM,683521","VADAVUCODE,682310","VADUTHALA,682023","VALAYANCHIRANGARA,683556","VARAPUZHA,683517","VAZHAKULAM,686670","VENGOOR,683546","VENNALA,682028","VYTTILA,682019","W/ISLAND,682003"],
+            "IDUKKI": ["ADIMALY,685561","ANAKKARA EDSO,685512","ARAKULAM,685591","AYYAPPANCOIL,685507","CHITHIRAPURAM,685565","DEVIKULAM,685613","ELAPPARA,685501","ELLAPATTI,685615","ERATTAYAR EDSO,685514","IDUKKI COLONY,685602","IDUKKI PAINAVU,685603","KALAYANTHANI,685588","KALLAR,685552","KALLARKUTTY,685562","KANCHIYAR,685511","KANJIKUZHI-IDUKKI,685606","KARIMANNUR,685581","KARIMKUNNAM,685586","ΚΑΤΤΑΡΡΑΝΑ,685508","KATTAPPANA SOUTH,685515","KODIKULAM,685582","KUDAYATHUR,685590","KULAMAVU,685601","KUMILY,685509","MARAIYUR,685620","MATTUPPATTI,685616","MOOLAMATTOM,685589","MUNNAR-KLA,685612","MURIKKASSERY,685604","MURUKADY,685535","MUTHALAKODAM,685605","MUTTOM-EK,685587","NEDUMKANDAM,685553","PARATHODE EDSO,685571","PEERMADE,685531","PERUVANTHANAM,685532","RAJAKAD,685566","SANTHANPARA,685619","SURIANALLE,685618","TALLIAR,685614","THANKAMONY,685609","THODUPUZHA,685584","THODUPUZHA BAZAR NDSO,685584","THODUPUZHA EAST,685585","THODUPUZHA WEST,685584","UDUMBANCHOLA,685554","UDUMBANNUR EDSO,685595","UPPUTHARA,685505","VAGAMON,685503","VANDANMETTU,685551","VANDIPERIYAR,685533","VANNAPURAM,685607","VAZHITHALA,685583","VELLATHOOVAL,685563","VENGALLUR,685608"],
+            "KANNUR": ["ALAKODE,670571","ALAVIL,670008","ANJARAKANDY,670612","AZHIKODE MDG,670009","BURNACHERRY,670013","CHALAD,670014","CHALIL,670102","CHAMPAD,670694","CHEMPERI,670632","CHEPPARAPADAVA,670581","CHERAKKARA,670104","CHERUKUNNU,670301","CHERUPUZHA,670511","CHIRAKKAL,670011","CHITTARIPARAMBA,670650","CHOKLI,670672","CHOWA,670006","CRPF CAMP ARAVANCHAL,670353","DHARMADAM,670106","EACHUR,670591","EDAT,670327","EDAYANNUR,670595","ERANHOLI,670107","ETAKKAD,670663","EZHIMALA NAVAL ACADEMY,670310","EZHOME,670334","IRITTY,670703","IRUKKUR,670593","KADACHIRA,670621","KADAVATHUR,670676","KADIRUR,670642","KAKKAT,670005","KALLIASSERI,670562","KANNADIPARAMBA,670604","KANNUR,670001","KANNUR CITY,670003","KANNUR CIVIL STN,670002","KANNUR DIST.HOSPITAL,670017","KANNUR RLY STN,670001","KANNUR THANA,670012","KANNUR UTY CAMPUS,670567","KARIMBAM,670142","KARIVELLUR,670521","KARIYAD SOUTH,673316","KELAKAM,670674","KILIYANTHARA,670706","KOKKANISSERI,670307","KOLACHERRY,670601","KOODALI,670592","KOTTIYUR,670651","KUNHIMANGALAM,670309","KUTHUPARAMBA.MDG,670643","MADAYI,670304","MAMBA,670611","MANDUR KANNUR,670501","MATTANNUR.SO,670702","MATTUL,670302","MATTUL NORTH,670325","MAYYIL,670602","MMBAZAR,670306","MOTTAMMAL,670331","MOWANCHERI,670613","MUNDALUR,670622","MUZHAPPILANGAD,670662","NADUVIL,670582","NEMAHE,673311","NETTUR,670105","NIRMALAGIRI,670701","OLAVILAM,673313","PALAYAD,670661","PALLIKUNNU,670004","PANOOR.SO,670692","PAPPINISSERI,670561","PARAL,670671","PARASSINIKADAVA,670563","PARIYARAM MEDICAL COLLEGE,670503","PARIYARAM-KANNUR,670502","PATHAYAKUNNU,670691","PATTUVAM,670143","PAYAM,670704","PAYANGADI MDG,670303","PAYANGADI RS,670358","PAYYAMBALAM,670001","PAYYANUR,670307","PAYYAVUR,670633","PERAVOOR.SO,670673","PERINGADI,673312","PERINGATHUR,670675","PILATHARA,670504","PINARAYI,670741","PONNIAM WEST,670641","RAMANTHALI,670308","SREEKANDAPURAM,670631","TALAP,670002","TEMPLEGATE SO,670102","THALASSERY,670101","THALASSERY BAZAR,670101","THALASSERY COURTS,670101","THALIPARAMBA,670141","THAZHE CHOVVA,670018","THIRUVANGAD.SO,670103","THOTTADA,670007","THUVAKUNNU,670693","ULIKKAL,670705","UMMENCHIRA,670649","VALAPATANAM,670010","VARAM,670594","VENGARA-KANNUR,670305"],
+            "KASARAGOD": ["ANANDASHRAMA,671531","BEKAL,671318","CHANGALA,671541","CHERVATHUR,671313","CHITTARIKKAL,671326","ELAMBACHI,671311","KALANAD,671317","KANHANGAD,671315","KASARAGOD,671121","KASARAGOD RS,671121","KOTTACHERRY,671315","KUDLU,671124","KUMBLA,671321","MANGALPADY,671324","MANJESHWAR,671323","MULIYAR,671542","MULLERIA,671543","NILESHWAR,671314","PADNE,671312","PAIVALIKE,671348","PALLIKERE,671316","PARAPPA,671533","PERDALA,671551","PERLA,671552","RAJAPURAM,671532","TALANGARA,671122","THURUTHI,671351","TRIKARPUR,671310","UDMA,671319","UPPALA,671322","VIDYANAGAR,671123"],
+            "KOLLAM": ["ADICHANALLUR,691573","ALUMKADAVU,690573","ANCHAL,691306","ARINALLUR,690538","ASRAMOM,691002","ATHINAD NORTH,690542","AYUR,691533","BHOOTHAKULAM,691302","CHADAYAMANALAM,691534","CHANDANATHOPE,691014","CHANNAPETTAH,691311","CHATHANNUR,691572","CHAVARA,691583","CHAVARA BRIDGE,691583","CHAVARA SOUTH,691584","CHENGAMANAD JN,691557","CHEPPARA,691520","CHITHARA,691559","CLAPPANA,690525","EAST KALLADA,691502","EDAMON,691307","ELAMPAL,691322","ERAVIPURAM,691011","EROOR S.O (KOLLAM),691312","EZHUKONE,691505","KADAKKAL,691536","KADAPPAKADA,691008","KAITHACODE,691543","KALAYAPURAM,691560","KALLUVATHUKKAL,691578","KALTHURUTHY,691309","KANJAVELY,691602","KANNANALLUR,691576","KARAMCODE,691579","KARINGANNUR,691516","KARUNAGAPPALLY HO,690518","KAVANAD,691003","KILIKOLLUR,691004","KILIKOLLUR EAST,691004","KOIVILA,691590","KOLLAM BAZAR,691001","KOLLAM CANTONMENT,691001","KOLLAM CIVILSTATION,691013","KOLLAM CUTCHERRY,691013","KOLLAM HPO,691001","KOLLAM TALUK CUTCHERY,691001","KOTTARAKARA HO,691506","KOTTIYAM,691571","KULAKADA,691521","KULASEKHARAPURAM,690544","KULATHUPUZHA,691310","KUNDARA,691501","KUNDARA EAST,691501","KUNNATHUR EAST,690540","KUNNICODE,691508","KUZHIMATHICAUD,691509","MADATHARA,691541","MANAPPALLY NORTH,690574","MANCHALLUR PATHANAPURAM,689695","MANGAD,691015","MAYYANAD,691303","MUKATHALA,691577","MUKUNDAPURAM,691585","MULAVANA,691503","MYNAGAPPALLY,690519","NALLILA,691515","NEDUNGOLAM,691334","NEENDAKARA,691582","NILAMEL,691635","OACHIRA,690526","ODANAVATTOM,691512","OYUR,691510","PALLICKAL-KOTTARAKARA,691566","PALLITHOTTAM,691006","PARAVUR-KOLLAM,691301","PARIPPALLY,691574","PATHANAPURAM,689695","PATTATHANAM,691021","PATTAZHY,691522","PERINAD MDG,691601","PERUMPUZHA,691504","POOYAPALLY,691537","PORUVAZHY,690520","PRAYAR,690547","PULAMON,691531","PULLICHIRA,691304","PUNALUR,691305","PUNALUR PAPER MILLS,691332","PUTHOOR,691507","SRP MARKET,690539","SAKTHIKULANGARA,691581","SASTHAMCOTTAH,690521","SOORANAD,690522","SOORANAD NORTH,690561","THANGASSERRY,691007","THATTAMALA,691020","THAZHAVA,690523","THEKKEVILA,691016","THEKKUMBHAGOM,691319","THENMALA,691308","THEVALAKKARA,690524","THEVALLY,691009","THIRUMULLAVARAM,691012","THOLICODE,691333","TKM COLLEGE,691005","ULIYAKOVIL,691019","UMAYANALLUR IE,691589","VADAKEVILA,691010","VADAKKUMTHALA EAST,690536","VALACODE,691331","VALAKOM,691532","VAVVAKKAVU,690528","VELIYAM,691540","VELLIMON,691511","VETTIKAVALA,691538","WEST KALLADA,691500"],
+            "KOTTAYAM": ["ANICKADU,686503","ANTHINAD,686651","ARUNAPURAM,686574","ARUVITHURA,686122","ATHIRAMPUZHA,686562","AYARKUNNAM,686564","AYMANAM,686015","BHARANANGANAM,686578","CHAKOMPATHAL,686517","CHANGANACHERRY,686101","CHANGANACHERRY COLLEGE,686101","CHANGANACHERRY INDUSTRIALNAGAR,686106","CHANGANACHERRY MARKET,686101","CHENGALAM,686585","CHENGALAM SOUTH,686022","CHERPUNKAL,686584","CHINGAVANAM,686531","CHIRAKADAVU,686520","DEVAGIRI,686555","ERATTUPETTA,686121","ERUMELI,686509","ETTUMANUR,686631","ETTUMANUR JUNCTION,686631","GANDHINAGAR-KTM,686008","KADANAD MEENACHIL,686653","KADAPLAMATTOM,686571","KADUTHURUTHY,686604","KAIPUZHA,686602","KALAKETTY,686508","KALLARA S.O (KOTTAYAM),686611","KANAKARI,686632","KANGAZHA,686541","KANJIRAPALLY,686507","KARIKKATTOOR,686544","KARUKACHAL,686540","KIDANGOOR,686572","KIDANGOOR SOUTH,686583","KILIROOR NORTH,686020","KOORALI,686522","KOOTTICKAL,686514","KOOVAPALLY,686518","KOTTAYAM COLLECTORATE,686002","KOTTAYAM HPO,686001","KOTTAYAM NORTH,686001","KOTTAYAM WEST,686003","KUDAMALOOR,686017","KUDAVECHOOR,686144","KULASEKHARAMANGALAM,686608","KUMARAKOM,686563","KUMARANALLOOR,686016","KUNNAM VECHOOCHIRA,686511","KURAVILANGAD,686633","KURISUMMOODU,686104","KUZHIMATTOM,686533","MADAPPALLY,686546","MALLOOSSERY,686041","MANARCAUD,686019","MANGANAM,686018","MANIMALA,686543","MANJOOR,686603","MANNANAM,686561","MARANGATTUPALLY,686635","MEENADOM,686516","MELUKAVUMATTOM,686652","MEVELLOOR,686609","MONIPPALLY,686636","MOONNILAVU,686586","MUKKOOTTUTHARA,686510","MUNDAKKAYAM,686513","MUTTAMBALAM,686004","MUTTUCHIRA,686613","NALUKODY,686548","NATTAKOM,686013","NATTASSERY SH MOUNT,686006","NEDUMKUNNAM,686542","NEDUNGADAPPALLY,686545","NEELAMPEROOR,686534","NEENDOOR,686601","NEWSPRINT NAGAR,686616","NJIZHOOR,686612","OLESSA,686014","OZHAVUR,686634","PADINJAREKKARA,686146","PAKKIL,686012","PALA HO,686575","PALA TOWN,686575","PALAI MARKET JUNCTION,686575","PALLICKACHIRAKAVALA,686537","PALLOM,686007","PAMPADY,686502","PAMPADY SOUTH,686521","PARATHODE,686512","PARIYARAM,686021","PEROOR,686637","PERUMPANACHY,686536","PERUNNA,686102","PERUVA,686610","PLASSANAL,686579","PONKUNNAM,686506","POONJAR,686581","POONJAR THEKKEKARA,686582","POOVARANI,686577","PRIYADARSINI HILLS,686560","PULICKAKAVALA,686515","PULIYANNOOR,686573","PUTHUPPALLY,686011","RAMAPURAM BAZAR,686576","RUBBER BOARD,686009","SACHIVOTHAMAPURAM,686532","TEEKOY,686580","THALAYAZHAM,686607","THALAYOLAPARAMBU,686605","THAZHATHANGADY,686005","THEERTHAPADAPURAM,686505","THEKKETHUKAVALA,686519","THELLAKOM,686630","THIDANAD,686123","THIRUMANI VENKITA PURAM,686606","THIRUNAKKARA,686001","THOTTAKADU,686539","THRICKODITHANAM,686105","THURUTHY,686535","UDAYANAPURAM,686143","VADAVATHOOR,686010","VAIKOM HO,686141","VAKATHANAM,686538","VAYALA,686587","VAZHAPPALLY WEST,686103","VAZHOOR,686504","VELLOOR,686501"],
+            "MALAPPURAM": ["ABDULRAHIMANNAGAR,676305","ALANKODE,679585","ANAMANGAD,679357","ANGADIPURAM,679321","AREACODE,673639","ARIYALLUR,676312","BPANGADI,676102","CALICUT AIRPORT,673647","CALICUT UNIVERSITY,673635","CHELEMBRA,673634","CHERUKARA,679340","CHERUVAYUR,673645","CHETTIPADI,676319","CHUNGATHARA,679334","DOWNHILL,676519","EDAKKARA-NLB,679331","EDAPAL MDG,679576","EDARIKODE,676501","EDAVANNA,676541","ERAMANGALAM,679587","IRIMBILIYAM,679572","KADALUNDINAGARAM,673314","KADAMPUZHA,676553","KALADIMLP-,679582","KALIKAVU,676525","KALPAKANCHERI,676551","KANHIRAMUKKU,679584","KARUVAMBRAM,676123","KARUVARAKUNDU,676523","KODINHI,676309","KODUR,676504","KOKKUR,679591","KOLAPARAMBA,676522","KOLATHUR-MLP,679338","KONDOTTI,673638","KOTTAKKAL MDG,676503","KUTTAYI,676562","KUTTILANGADI,676506","KUTTIPURAM MDG,679571","KUZHIMANNA,673641","MAKKARAPARAMBA,676507","MALAPPURAM,676505","MALAPPURAM CIVIL STATION,676505","MAMPAD,676542","MANGALAM,676561","MANIMOOLY,679333","MANJERI,676121","MANJERI BAZAR,676121","MANJERI COLLEGE,676122","MANKADA,679324","MARANCHERI,679581","MELATTUR,679326","MONGAM,673642","MOOKKUTHALA,679574","MOONNIYOOR,676311","MUNDUPARAMBA,676509","NANAMUKKU,679575","NILAMBUR,679329","NILAMBUR RS,679330","NIRAMARUTHUR,676109","OTHUKKUNGAL,676528","PANDIKKAD,676521","PARAPANANGADI,676303","PARAVANNA,676502","PATTIKKAD-MLP,679325","PERINTALMANNA,679322","PERINTALMANNA BAZAR,679322","PERUMBADAPPU,679580","PONANI HPO,679577","PONANI NAGARAM,679583","PONANI SOUTH,679586","PONMUNDAM,676106","POOKAYIL BAZAR,676107","POOKKOTTUMPADAM,679332","POOKOTTUR,676517","PULAMANTHOLE,679323","PULIKKAL,673637","RANDATHANI,676510","TANALUR,676307","TANUR MBR,676302","TAVANUR,679573","TAYYALINGAL,676320","TENHIPALAM,673636","THALAKKADATHUR,676103","THEKKUMURI,676105","TIRUNAVAYA,676301","TIRUR EAST BAZAR,676101","TIRUR KLA,676101","TIRURANGADI,676306","TIRURANGADI BAZAR,676306","TRIKKANDIYUR,676104","TRIPRANGODE,676108","TUVWUR,679327","VALAKOLAM,676508","VALANCHERI,676552","VANIYAMBALAM,679339","VATTAMKULAM,679578","VAZHAKKAD,673640","VELIANKODE,679579","VELIMUKKU,676317","VENGARA-MLP,676304","WANDOOR,679328"],
+            "PALAKKAD": ["AGALI,678581","ALANALLUR,678601","ALATHUR,678541","AMBALAPARA,679512","AMBIKAPURAM,678011","ANAKKARA,679551","ANJUMOORTHY,678682","AYALUR,678510","CHALAVARA,679505","CHALISSERI,679536","CHANDRANAGAR,678007","CHERPALCHERY,679503","CHITTILANCHERRY,678704","CHITTUR COLLEGE,678104","CHITTUR PG,678101","CHOKKANATHAPURAM,678005","CHUNANGAD,679511","COYALMANNA,678702","EDATHARA,678611","ELAPULLY,678622","ERIMAYUR,678546","ETTANUR,678502","GANESHGIRI,679123","KADAMBUR(KERALA),679515","KAKKAYUR,678512","KALLADIKKODE,678596","KALLADIPATTA,679313","KALLEKULANGARA,678009","KALPATHI,678003","KANHIRAPUZHA,678591","KANJIKODE,678621","KANJIKODE WEST,678623","KANNADI,678701","KANNAMBRA,678686","KANNIAMPURAM,679104","KARAKURISSI,678595","KARALMANNA,679506","KARIMBA,678597","KATAMPAZHIPURAM,678633","KAVALAPPARA,679523","KAVASSERY,678543","KERALASSERY,678641","KILAKKANCHERI,678684","KODUVAYUR,678501","KOLLENGODE MDG,678506","KONGAD,678631","KOTAMBU,678551","KOTTAYI,678572","KOTTEKKAD,678732","KOZHINJAMPARA,678555","KOZHIPARA,678557","KUDALLUR,679554","KULUKKALLUR,679337","KUMARANALLUR,679552","KUMBIDI,679553","KUNISSERI,678681","KUNNATHURMEDU,678013","KUTTANAD,679533","KUTTANUR,678721","LAKKIDI,679301","MALAMPUZHA DAM,678651","MANISSERI,679521","MANKARAI,678613","MANNAPRA,678685","MANNARKAD,678582","MANNARKAD COLLEGE,678583","MANNUR PALGHAT,678642","MATHUR PALAKKAD,678571","MEENAKSHIPURAM,678533","MELARKODE,678703","MELEPATTAMBI,679306","MENONPARA,678556","MUDAPPALLUR,678705","MUNDUR PG,678592","MUTHALAMADA,678507","MUTTIKULANGARA,678594","NADUVATTAM,679308","NALLEPILLY,678553","NATTUKAL,678554","NELLAYA,679335","NEMMARA,678508","NURANI,678004","OLAVAKKOT,678002","OTTAPPALAM,679101","PALAKKAD,678001","PALAKKAD CITY,678014","PALAKKAD COLLECTORATE,678001","PALAKKAD COLLEGE,678001","PALAKKAD ENGG COLLEGE,678008","PALAKKAD FORT,678001","PALAMPALACODE,678544","PALAPPURAM,679103","PALLASSANA,678505","PALLAVUR,678688","PALLIPURAM PALAKKAD,678006","PALLIPURAM-PATTAMBI,679305","PANAMANNA,679501","PARAMBIKULAM,678661","PARLI PG,678612","PARUTTIPULLI,678573","PATTAMBI,679303","PATTANCHERRY,678532","PERIMBADARI,678762","PERINGODE,679535","PERINGOTTUKURUSSI,678574","PERINKULAM,678542","PERUR,679302","PERUVEMBA,678531","POLPULLY,678552","POTTASSERI,678598","PUDIYANKOM,678545","PUDUNAGARAM,678503","Puduppariyaram Class III SO,678731","PULAPPATTA,678632","PULASSERI,679307","PUTHUCODE,678687","SEKHARIPURAM,678010","SHORANUR,679121","SHORANUR GOVT PRESS,679122","SRIKRISHNAPURAM,679513","TACHAMPARA,678593","TATTAMANGALAM PG,678102","TATTAMANGALAM SOUTH,678102","THEKKEGRAMAM,678103","THENKURUSSI,678671","THIRUVAZHIYODE,679514","THOTTAKKARA,679102","TIRUVEGAPPURA,679304","TOLANUR,678722","TRIKKATIRI,679502","TRITHALA,679534","VADAKKANCHERRY MBR MDG,678683","VADAKKANTHARA,678012","VADAVANNUR,678504","VALLAPUZHA,679336","VANDALI,678706","VANDITHAVALAM,678534","VANIAMKULAM,679522","VELLINEZHI,679504","VENGASSERI,679516","VILAYUR,679309","WALAYAR DAM,678624"],
+            "PATHANAMTHITTA": ["ADUR KERALA,691523","ANGADI,689674","ARANMULA,689533","AYROOR NORTH,689612","AYROOR SOUTH,689611","AZHIYADATHUCHIRA,689113","CHATHANKARY,689112","CHELLAKKAD,689677","CHENGAROOR,689594","CHERUKOLE KOZHENCHERRI,689650","CHITTAR,689663","CHUNKAPARA,686547","CHURULICODE,689668","EDAYARANMULA,689532","ELAMANNUR,691524","ELANTHUR,689643","ELAVANTHITTA,689625","ENATHU,691526","ERAVIPEROOR,689542","ETTICHUVADU,689675","EZHUMATTOOR,689586","KADAMBANAD,691552","KADAMBANAD SOUTH,691553","KADAMMANITTA,689649","KAIPATTUR,689648","KALANJOOR,689694","KALLOOPPARA,689583","KAVIYUR,689582","KAVUMBHAGOM,689102","KEEZHVAIPUR,689587","KIDANGANNUR,689514","KODUMON,691555","KOIPURAM,689531","KONNY,689691","KOODAL,689693","KOTTANAD,689615","KOTTATHOOR,689614","KOZHENCHERRY,689641","KOZHENCHERRY COLLEGE,689641","KOZHENCHERRY THEKKEMALA,689654","KULANADA,689503","KUMBANAD,689547","KUMBAZHAMURI,689653","KUMPALAMPOIKA,689661","KUNNAMTHANAM,689581","KURIANNOOR,689550","KUTTAPUZHA,689103","KUTTUR,689106","KUZHIKALA,689644","MAKKANKUNNU,689645","MAKKAPUZHA,689676","MALAYALAPUZHA ERAM,689664","MALLAPPALLY,689585","MALLAPPALLY WEST,689585","MANJADI,689105","MANNADY,691530","MARAMON,689549","MELUKARA,689593","MEZHUVELI,689507","MUTHUPILAKKAD,690520","MYLAPRA,689671","MYLAPRA TOWN,689678","NARANGANAM,689642","NEDUMPRUM,689110","NEERETTUPURAM,689571","NELLIKKALA,689643","NIRANAM,689621","OMALLUR,689647","OTHALUR,689546","PADAMON,689656","PALLICKAL NOORNAD,690504","PALLIYAKKAL,689645","PANDALAM,689501","PARAKODE,691554","PARAMOOR,689547","PATHANAMTHITTA,689645","PATOOR,690529","PEERUMEDU,685531","PERUMPETTY,689592","PERUNADU,689711","PONGALADI,691552","PRAKKANAM,689643","PULLAD,689548","PUNNALA,689695","PURAMATTOM,689543","RANNI,689672","RANNI PERUNADU,689711","SEETHATHODE,689667","THALACHIRA,689645","THATARTHI,689645","THELLIYOOR,689544","THIRUVALLA,689101","THIRUVALLA R.S,689111","THUMPAMON,689502","THUMPAMON THAZHAM,689513","ULLANNUR,689503","VADASSERIKKARA,689662","VALAKUZHY,689544","VALLAMKULAM,689541","VALLICODE,689648","VALLICODE KOTTAYAM,689656","VAYYATTUPUZHA,689663","VECHOOCHIRA,686511","VENNIKULAM,689544"],
+            "TRIVANDRUM": ["ADINADU,690542","AKALUR,679302","ALANTHOOR,695141","ALAYAMON,691320","ALIYADU,695607","AMACHAL,695572","AMARAVILA,695122","AMBALATHARA,695026","AMBOORI,695505","ANAKUDY,695606","ANAYARA,695029","ARAYOOR,695122","ARUMANOOR,695525","ARYANAD,695542","ARYANCUZHI,695009","ATTINGAL,695101","ATTUKAL,695009","AYIROOR PARAMBU,695310","AYROOR,695310","AZHOOR,695305","BALARAMAPURAM,695501","BHARATHANNOOR,695616","BONACAUD,695551","CHACKAI,695024","CHALA,695036","CHALAI,695036","CHARUPARA,695601","CHEMPAZHANTHY,695587","CHENGALLUR,695501","CHERIAKONNI,695013","CHERUNNIYOOR,695142","CHIRAYINKEEZHU,695304","CHOVAZHOOR,695573","CHULLIMANOOR,695541","DALUMMUGHAM,695125","DANUVACHAPURAM,695503","ELAKAMON,695310","ENIKKARA,695564","FORT(TRIVANDRUM),695023","GOLF LINKS,695003","INDUSTRIAL ESTATE PAPPANAMCOD,695019","IRUMPANANGADU,691505","KADAKKAVOOR,695306","KADAYAL,695572","KADINAMKULAM,695303","KALLAMBALAM,695605","KALLARA,695608","KALLIKKADU,695572","KAMALESWARAM,695009","KANIAKULANGARA,695615","KANJIRAMKULAM,695524","KARAKULAM,695564","KARALI,695601","KARAMANA,695002","KARAVARAM,695605","KARIKKAKOM,695021","KARINGANNOOR,691516","KARUMKUTTY,695502","KARUMKUTTY SOUTH,695502","KATTAKADA,695572","KAVALAYOOR,695144","KAVALLOOR,695506","KAWDIAR,695003","KAZHAKUTTAM,695582","KERALA GOVERNOR'S CAMP,695099","KILIMANOOR,695601","KILIMANOOR PALACE,695601","KOCHUVEMBA,695008","KOLLAYIL,695502","KOONTHALLOOR,695304","KOTUKAL,695501","KOVILAM,695527","KUDAPPANAKUNNU,695043","KUNNATHUKAL,695504","KURAKKADA,695104","KURAKKANI,695141","KURUPUSSERY,695002","KUTTICHAL,695574","KUVALLUR,695504","LAHA,689662","LKG NAGAR,695003","MADAVOOR,695602","MALAYINKIL,695571","MANACAUD,695009","MANAMBUR,695611","MANDALAM,695003","MANIKANTESWARAM,695013","MARANALLOOR,695512","MEDICAL COLLEGE,695011","MELTHONNAKKAL,695317","MITHIRMALA,695610","MUDAPURAM,695314","MUKKOLA,695043","MUKKOLAKKAL,695044","MURUKKUMPUZHA,695302","MUTHUVILA,695610","NAGAROOR,695601","NALANCHIRA,695015","NAVAIKULAM,695603","NEDUMANGAD,695541","NEERAMANKARA,695040","NEMOM,695020","NEYYARDAM,695502","NEYYATTINKARA,695121","PALLICKAL KILIMANOOR,695604","PALLIPURAM CRFP,695316","PALODE,695562","PANAVOOR,695568","PANGODE,695609","PAPPANAMCODE,695018","PARAKKAL,695015","PARASUVAIKKAL,695508","PARASSALA,695502","PATTOM,695004","PAZHAKUTTY,695561","PERINGAMMALA,695563","PERUMKADAVILA,695124","PERUMPAZHUTHOOR,695126","PETTAH,695024","PEYAD,695573","PONGANADU,695601","PONMUDI,695551","POOJAPPURA,695012","POOVAR,695525","POTHENCODE,695584","POZHIYOOR,695513","PRAVACHAMBALAM,695020","PULIMATH,695612","PUNTHURA,695026","PUTHENCHANTHAI,695001","PUTHUKURICHI,695303","SASTHAMANGALAM,695010","SREEKARIYAM,695017","TEKKEVILA,691016","THATTATHUMALA,695614","THIRUMALA,695006","THIRUVALLAM,695027","THIRUVANANTHAPURAM CHALAI,695036","THIRUVANANTHAPURAM ENGINEERING,695016","THIRUVANANTHAPURAM GPO,695001","THOLICODE,695541","THONNAKKAL,695317","TRIVANDRUM BEACH,695007","ULLOOR,695011","VAKKOM,695308","VALIATHURA,695008","VANCHIYOOR,695035","VARKALA,695141","VARKALA SOUTH,695141","VATTIYOORKAVU,695013","VATTUTTUMALA,695614","VEERANAKAVU,695572","VELLANAD,695543","VELLAYANI,695522","VEMBAYAM,695615","VENGANOOR,695523","VENJARAMOODU,695607","VENKULAM,695523","VIKASBHAVAN,695033","VITHURA,695551","VIZHINJAM,695521"],
+            "TRICHUR": ["ALAGAPPANAGAR,680302","ALOOR,680683","AMMADAM,680563","ANDATHODE,679564","ANNAMANADA,680741","ANTHIKAD,680641","ARIMPUR,680620","ARIPAMBRA,680688","ASHTAMICHIRA,680731","ATHANI,680581","AYYANTHOLE,680003","B V COLLEGE,680651","CHALAKUDY,680307","CHALAKUDY NORTH,680307","CHAVAKKAD,680506","CHELAKKARA,680586","CHELAVOOR,673571","CHENTRAPPINNI,680687","CHERUTHURUTHY,679531","CHEVOOR,680027","CHOWANNUR,680517","DESAMANGALAM,679532","EDATHIRUTHI,680703","ELTHURUTH,680611","ENKAKAD,680589","ERAMANGALAM,680009","ERAVU,680620","IRINJALAKUDA,680121","IRINJALAKUDA NORTH,680125","KADAVALLUR,680543","KAKKAD-TCR,680503","KALLUR,680317","KANDASSANKADAVU,680613","KANDAYI,680602","KANJANY,680612","KANNARA,680652","KARALAM,680711","KARUPADANNA,680670","KARUVANNUR,680711","KATTAMPAL,680544","KATTUR,680702","KAVALAKAT,680612","KECHERY,680501","KODAKARA,680684","KODANNUR,680563","KODUNGALLUR,680664","KOODALMANIKYAM,680121","KORATTY,680308","KORATTY EAST,680308","KOTTEKKAD,680013","KUNNAMKULAM,680503","KUNNAMKULAM BAZAR,680503","KURIACHIRA,680006","KURUMASSERY,680512","KUTTANELLUR,680014","KUTTUR TRICHUR,680013","MADATHUMPADI,680733","MALA,680732","MALLASSERY,680582","MANNUTHY,680651","MARATHAKKARA,680320","MATHILAKAM,680685","MATTOM,680602","MULLURKARA,680583","MUNDUR,680541","MUTTICHUR,680641","NADATHARA,680751","NATTIKA,680566","NATTIKA BEACH,680572","NAYARANGADI,680309","NEHRU NAGAR,680006","NELLAI,680305","OLLUKKARA,680655","OLLUR,680306","PACHA,680652","PADIYUR,680688","PALIYAKARA,680302","PALLIKUNNU,680653","PALUVAI,680522","PANANCHERY,680652","PANANGAD,680665","PARAPPUKKARA,680310","PARIYARAM,680721","PATTIKKAD-TCR,680652","PAYYAPPALLYMOOLA,680611","PAZHAJI,680652","PAZHANJI,680542","PAZHAYANNUR,680587","PERAMANGALAM,680545","PERINGOTTUKARA,680565","PERINJANAM,680686","PERUMPILAVU,680519","PERUVALOOR,680508","PONNUKKARA,680306","POONKUNNAM,680002","PORATHISSERY,680125","POTHANICAUD,680686","POYYA,680733","PULLAZHI,680012","PULLUR,680683","PUNNAYUR,680518","PUNNAYURKULAM,679561","PUZHAKKAL,680553","RAMAVARMAPURAM,680009","SNDP ROAD,680307","SRINGAPURAM,680664","THALIKULAM,680569","THANIYATH KUNNU,680681","THAYOOR,680584","THIRUVAMBADY,680022","THIRUVILLWAMALA,680588","THOZHIYUR,680520","THRISSUR,680001","THRISSUR CITY,680020","THRISSUR ENGINEERING COLLEGE,680009","THUMBOOR,680662","THYKATTUSSERY,680306","TRIKKOOR,680306","TRIPRAYAR,680566","VADAKKUMKARA,680686","VADANAPPILLY,680614","VADANAPPILLY BEACH,680614","VADUKKUMMURI,680565","VALANJAVATTOM,680662","VALAPAD,680567","VALAPPAD,680567","VALAPPAD BEACH,680567","VALLACHIRA,680562","VARANDARAPPILLY,680303","VARANTHARAPPILLY,680303","VARAVUR,680585","VATANAPPALLY,680614","VATTAYI,680502","VATTIYOORKAVU,680013","VELAPPAYA,680596","VELLANGALLUR,680662","VELLANIKKARA,680654","VELUR THRISSUR,680601","VENKITANGU,680510","VIYYUR,680010","WADAKKANCHERI RS,680623","WADAKKANCHERY,680582"],
+            "WAYANAD": ["AMBALAVAYAL,673593","BATHERY,673592","BOYS TOWN,670644","CHEERAL,673595","CHULLIYODE,673592","ECHOME,670721","KALPETTA,673121","KALPETTA NORTH,673122","KAMBALAKKAD,673122","KANIYAMBETTA,673122","KARAKKAMALA,670645","KATTUNGACHIRA,670644","KENICHIRA,673596","KOROME,670731","MAKKIYAD,670731","MANANTHAVADY,670645","MEENANGADI,673591","MEPPADI,673577","MUTTIL,673122","NADVAYAL,670721","NIRAVILPUZHA,670731","PADINHARATHARA,673575","PANAMARAM,670721","PAYYAMPALLY,670646","PINANGODE,673122","PULPALLY,673579","PUTHANANGADI,670645","RIPPON,673577","SULTHAN BATHERY,673592","TARIODE,673575","THALAPPUZHA,670644","THONDARNAD,670731","THRIKAIPETTA,673577","VALAT,670644","VADUVANCHAL,673581","VELLAMUNDA,670731","VYTHIRI,673576","ANJUKUNNU,670645","BOYSTOWN,670644","CHEERAL,673595","CHUNDALE,673123","MANANTHAWADY,670645","MUTHANGA,673592","PADINJARATHARA,673575","SULTHANBATHERY,673592","THALAPUZHA,670644","VATUVANCHAL,673581","VELLAMUNDA,670731","VYTHIRI,673576"]
+        };
+
+        let fullDatabase = [];
+        let filteredData = [];
+        let currentPage = 1;
+        const rowsPerPage = 50;
+
+        const searchInput = document.getElementById('searchInput');
+        const resultsGrid = document.getElementById('resultsGrid');
+        const paginationControls = document.getElementById('paginationControls');
+        const pageIndicator = document.getElementById('pageIndicator');
+        const btnPrev = document.getElementById('btnPrev');
+        const btnNext = document.getElementById('btnNext');
+        const showingCountDisplay = document.getElementById('showingCountDisplay');
+
+        function initPinSearch() {
+            let slNo = 1;
+            for (const district in dbRaw) {
+                dbRaw[district].forEach(placeStr => {
+                    const lastCommaIdx = placeStr.lastIndexOf(',');
+                    const name = placeStr.substring(0, lastCommaIdx);
+                    const pin = placeStr.substring(lastCommaIdx + 1);
+                    fullDatabase.push({ sl: slNo++, name, district, pin });
+                });
+            }
+            
+            filteredData = [...fullDatabase];
+            document.getElementById('totalCountDisplay').innerText = fullDatabase.length.toLocaleString();
+            
+            attachPinListeners();
+            renderPinDashboard();
+        }
+
+        function attachPinListeners() {
+            searchInput.addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase();
+                filteredData = fullDatabase.filter(row => 
+                    row.name.toLowerCase().includes(term) ||
+                    row.district.toLowerCase().includes(term) ||
+                    row.pin.includes(term)
+                );
+                currentPage = 1;
+                renderPinDashboard();
+            });
+
+            btnPrev.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--; renderPinDashboard(); window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            });
+
+            btnNext.addEventListener('click', () => {
+                const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+                if (currentPage < totalPages) {
+                    currentPage++; renderPinDashboard(); window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            });
+        }
+
+        // Action binding from Pin DB back to Policy Canvas
+        window.selectPin = function(district, pin) {
+            pushHistory();
+            data.statePin = `${district || 'KERALA'}.PΙΝ. ${pin}.`;
+            const input = document.getElementById('input-data-statePin');
+            if(input) input.value = data.statePin;
+            
+            updateCanvasElementStyle('statePin');
+            saveState();
+            
+            showFeedback(`PIN ${pin} applied successfully!`, 'success');
+            switchTab('data');
+        };
+
+        function renderPinDashboard() {
+            const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+            const startIndex = (currentPage - 1) * rowsPerPage;
+            const displayedData = filteredData.slice(startIndex, startIndex + rowsPerPage);
+
+            showingCountDisplay.innerText = `Showing ${filteredData.length} records`;
+
+            if (filteredData.length === 0) {
+                resultsGrid.innerHTML = `
+                    <div class="empty-state">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                            <line x1="2" y1="2" x2="22" y2="22" stroke="currentColor" stroke-width="2" />
+                        </svg>
+                        <h2 class="headline-medium">No results found</h2>
+                        <p class="body-medium">Try searching for a different name, district, or PIN.</p>
+                    </div>
+                `;
+                paginationControls.style.display = 'none'; return;
+            }
+
+            const mapIcon = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>`;
+            const selectIcon = `<svg style="width:18px;height:18px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>`;
+            
+            let html = '';
+            displayedData.forEach(row => {
+                html += `
+                    <article class="data-card">
+                        <div class="sl-no-badge">#${row.sl}</div>
+                        <div class="card-header">
+                            <div class="card-avatar">${mapIcon}</div>
+                            <div class="card-title-area"><h3 class="title-large">${row.name}</h3></div>
+                        </div>
+                        <div class="card-stepper">
+                            <div class="step-item">
+                                <div class="step-label label-large">Jurisdiction</div>
+                                <span class="district-chip">${row.district}</span>
+                            </div>
+                        </div>
+                        <div class="massive-pin-container">
+                            <div class="pin-label label-large">Postal Index Number</div>
+                            <div class="massive-pin display-medium">${row.pin}</div>
+                        </div>
+                        <button onclick="selectPin('${row.district}', '${row.pin}')" style="width: 100%; padding: 12px; border-radius: 99px; border: none; background: var(--md-primary); color: white; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.2s;">
+                            ${selectIcon} Select & Apply PIN
+                        </button>
+                    </article>
+                `;
+            });
+
+            resultsGrid.innerHTML = html;
+
+            if (totalPages > 1) {
+                paginationControls.style.display = 'flex';
+                pageIndicator.innerText = `Page ${currentPage} of ${totalPages}`;
+                btnPrev.disabled = currentPage === 1;
+                btnNext.disabled = currentPage === totalPages;
+            } else {
+                paginationControls.style.display = 'none';
+            }
+        }
+
+        // =====================================================================
+        // APPLICATION BOOTSTRAP
+        // =====================================================================
         document.addEventListener('DOMContentLoaded', () => {
             loadState(); 
             initApp();
+            initPinSearch();
 
             // Preview Toolbar Listeners
-            document.getElementById('btn-zoom-in').addEventListener('click', () => {
-                userZoomMultiplier = Math.min(5, userZoomMultiplier + 0.25);
-                applyCanvasTransform(true);
-            });
-            document.getElementById('btn-zoom-out').addEventListener('click', () => {
-                userZoomMultiplier = Math.max(0.25, userZoomMultiplier - 0.25);
-                applyCanvasTransform(true);
-            });
-            document.getElementById('btn-zoom-reset').addEventListener('click', () => {
-                userZoomMultiplier = 1;
-                panX = 0;
-                panY = 0;
-                calculateBaseScale();
-            });
+            document.getElementById('btn-zoom-in').addEventListener('click', () => { userZoomMultiplier = Math.min(5, userZoomMultiplier + 0.25); applyCanvasTransform(true); });
+            document.getElementById('btn-zoom-out').addEventListener('click', () => { userZoomMultiplier = Math.max(0.25, userZoomMultiplier - 0.25); applyCanvasTransform(true); });
+            document.getElementById('btn-zoom-reset').addEventListener('click', () => { userZoomMultiplier = 1; panX = 0; panY = 0; calculateBaseScale(); });
 
             document.getElementById('btn-edit-mode').addEventListener('click', (e) => {
                 isEditMode = !isEditMode;
                 const btn = e.currentTarget;
                 if (isEditMode) {
-                    btn.classList.add('active');
-                    document.getElementById('print-container').classList.add('edit-mode-active');
+                    btn.classList.add('active'); document.getElementById('print-container').classList.add('edit-mode-active');
                     showFeedback('Edit Mode ON: Drag items to move them.', 'success');
                 } else {
-                    btn.classList.remove('active');
-                    document.getElementById('print-container').classList.remove('edit-mode-active');
+                    btn.classList.remove('active'); document.getElementById('print-container').classList.remove('edit-mode-active');
                 }
             });
 
-            document.getElementById('btn-undo').addEventListener('click', () => {
-                undo();
-            });
+            document.getElementById('btn-undo').addEventListener('click', () => undo());
 
             // PDF Upload logic
             document.getElementById('pdf-upload').addEventListener('change', async (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-
+                const file = e.target.files[0]; if (!file) return;
                 const btnText = document.getElementById('pdf-upload-text');
-                const originalText = btnText.innerText;
-                btnText.innerText = 'Extracting...';
-
+                const originalText = btnText.innerText; btnText.innerText = 'Extracting...';
                 try {
                     const arrayBuffer = await file.arrayBuffer();
                     const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
                     let fullText = "";
-
                     for (let i = 1; i <= pdf.numPages; i++) {
                         const page = await pdf.getPage(i);
                         const textContent = await page.getTextContent();
-                        const pageText = textContent.items.map(item => item.str).join(" ");
-                        fullText += pageText + " \n";
+                        fullText += textContent.items.map(item => item.str).join(" ") + " \n";
                     }
-
                     parseInsuranceData(fullText);
                     showFeedback('Document processed successfully!', 'success');
-                } catch (error) {
-                    console.error("Error parsing PDF:", error);
-                    showFeedback('Could not read PDF. Make sure it is valid text-based.', 'error');
-                } finally {
-                    btnText.innerText = originalText;
-                    e.target.value = ''; 
-                }
+                } catch (error) { showFeedback('Could not read PDF. Make sure it is valid text-based.', 'error'); } 
+                finally { btnText.innerText = originalText; e.target.value = ''; }
             });
 
             // Template BG Upload
@@ -1551,9 +1623,7 @@
                 const file = e.target.files[0];
                 if (file) {
                     const reader = new FileReader();
-                    reader.onload = (event) => {
-                        document.getElementById('print-container').style.backgroundImage = `url(${event.target.result})`;
-                    };
+                    reader.onload = (event) => { document.getElementById('print-container').style.backgroundImage = `url(${event.target.result})`; };
                     reader.readAsDataURL(file);
                 }
             });
@@ -1562,8 +1632,7 @@
             document.getElementById('bounds-toggle-container').addEventListener('click', (e) => {
                 if(e.target.tagName.toLowerCase() === 'input') return;
                 const checkbox = document.getElementById('show-outlines');
-                checkbox.checked = !checkbox.checked;
-                checkbox.dispatchEvent(new Event('change'));
+                checkbox.checked = !checkbox.checked; checkbox.dispatchEvent(new Event('change'));
             });
 
             document.getElementById('show-outlines').addEventListener('change', (e) => {
@@ -1574,15 +1643,11 @@
                 const iconOff = document.getElementById('guide-icon-off');
 
                 if (showOutlines) {
-                    track.classList.add('active');
-                    iconWrap.classList.add('active');
-                    iconOn.classList.remove('hidden');
-                    iconOff.classList.add('hidden');
+                    track.classList.add('active'); iconWrap.classList.add('active');
+                    iconOn.classList.remove('hidden'); iconOff.classList.add('hidden');
                 } else {
-                    track.classList.remove('active');
-                    iconWrap.classList.remove('active');
-                    iconOn.classList.add('hidden');
-                    iconOff.classList.remove('hidden');
+                    track.classList.remove('active'); iconWrap.classList.remove('active');
+                    iconOn.classList.add('hidden'); iconOff.classList.remove('hidden');
                 }
                 updateAllCanvasStyles();
             });
@@ -1594,100 +1659,59 @@
                     data = JSON.parse(JSON.stringify(INITIAL_DATA));
                     styles = JSON.parse(JSON.stringify(INITIAL_STYLES));
                     document.getElementById('print-container').style.backgroundImage = 'none';
-                    
                     localStorage.removeItem('policyCover_data_v2');
                     localStorage.removeItem('policyCover_styles_v2');
-                    
                     initApp();
                     showFeedback('Data reset to defaults.', 'success');
                 }
             });
 
-            // High Quality Capture fixing CSS Scale Transforms on Mobile
+            // Printing & Image Capture
             const captureCanvas = async () => {
                 const originalContainer = document.getElementById('print-container');
-                
-                // Create a pristine off-screen host to avoid mobile viewport scaling limits
                 const printHost = document.createElement('div');
-                printHost.style.position = 'fixed';
-                printHost.style.top = '0';
-                printHost.style.left = '-9999px';
-                printHost.style.width = `${A4_WIDTH_PX}px`;
-                printHost.style.height = `${A4_HEIGHT_PX}px`;
-                printHost.style.zIndex = '-1000';
+                printHost.style.position = 'fixed'; printHost.style.top = '0'; printHost.style.left = '-9999px';
+                printHost.style.width = `${A4_WIDTH_PX}px`; printHost.style.height = `${A4_HEIGHT_PX}px`; printHost.style.zIndex = '-1000';
                 
-                // Clone the container to isolate it from the live UI layout
                 const clone = originalContainer.cloneNode(true);
-                
-                // Force 1:1 scale and remove any editing outlines
-                clone.style.transform = 'none';
-                clone.style.transformOrigin = 'unset';
-                clone.style.width = `${A4_WIDTH_PX}px`;
-                clone.style.height = `${A4_HEIGHT_PX}px`;
+                clone.style.transform = 'none'; clone.style.transformOrigin = 'unset';
+                clone.style.width = `${A4_WIDTH_PX}px`; clone.style.height = `${A4_HEIGHT_PX}px`;
                 clone.classList.remove('edit-mode-active');
+                clone.querySelectorAll('.guide-active').forEach(g => g.classList.remove('guide-active'));
                 
-                // Remove guide classes on the clone to ensure clean print even if it was left on
-                const guides = clone.querySelectorAll('.guide-active');
-                guides.forEach(g => g.classList.remove('guide-active'));
-                
-                printHost.appendChild(clone);
-                document.body.appendChild(printHost);
-                
-                // Wait for the DOM to recognize the new off-screen layout
+                printHost.appendChild(clone); document.body.appendChild(printHost);
                 await new Promise(r => setTimeout(r, 100)); 
                 
                 try {
-                    const canvas = await html2canvas(clone, {
-                        scale: 3, 
-                        useCORS: true,
-                        backgroundColor: '#ffffff',
-                        logging: false,
-                        width: A4_WIDTH_PX,
-                        height: A4_HEIGHT_PX,
-                        windowWidth: A4_WIDTH_PX, // Force desktop-like window dimensions
-                        windowHeight: A4_HEIGHT_PX
-                    });
+                    const canvas = await html2canvas(clone, { scale: 3, useCORS: true, backgroundColor: '#ffffff', logging: false, width: A4_WIDTH_PX, height: A4_HEIGHT_PX, windowWidth: A4_WIDTH_PX, windowHeight: A4_HEIGHT_PX });
                     return canvas;
-                } finally {
-                    document.body.removeChild(printHost); // Cleanup
-                }
+                } finally { document.body.removeChild(printHost); }
             };
 
             function replaceButtonWithLoader(btnElement, isMobile) {
                 const originalContent = btnElement.innerHTML;
                 const spinnerClass = isMobile ? 'w-6 h-6 animate-spin' : 'w-4 h-4 animate-spin';
-                
-                const spinnerHtml = `<div style="display:flex;align-items:center;justify-content:center;"><i data-icon="loader-2" class="${spinnerClass}"></i></div>`;
-                btnElement.innerHTML = spinnerHtml;
+                btnElement.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;"><i data-icon="loader-2" class="${spinnerClass}"></i></div>`;
                 renderIcons(btnElement);
-                
                 return originalContent;
             }
 
-            // Downloader Logic
             document.getElementById('btn-download-png').addEventListener('click', async function() {
                 const originalHTML = replaceButtonWithLoader(this, false);
-
                 setTimeout(async () => {
                     try {
                         const canvas = await captureCanvas();
                         const link = document.createElement('a');
                         link.download = data.vehicleNo ? `PolicyCover_${data.vehicleNo.replace(/\s+/g, '_')}.png` : 'PolicyCover_Document.png';
-                        link.href = canvas.toDataURL('image/png');
-                        link.click();
+                        link.href = canvas.toDataURL('image/png'); link.click();
                         showFeedback('PNG downloaded successfully!', 'success');
-                    } catch (err) {
-                        showFeedback('Failed to download PNG.', 'error');
-                    } finally {
-                        this.innerHTML = originalHTML;
-                        renderIcons(this);
-                    }
+                    } catch (err) { showFeedback('Failed to download PNG.', 'error'); } 
+                    finally { this.innerHTML = originalHTML; renderIcons(this); }
                 }, 300);
             });
 
             document.getElementById('btn-download-pdf').addEventListener('click', async function() {
                 const originalHTML = replaceButtonWithLoader(this, false);
-
                 setTimeout(async () => {
                     try {
                         const canvas = await captureCanvas();
@@ -1696,25 +1720,17 @@
                         pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 210, 297);
                         pdf.save(data.vehicleNo ? `PolicyCover_${data.vehicleNo.replace(/\s+/g, '_')}.pdf` : 'PolicyCover_Document.pdf');
                         showFeedback('PDF downloaded successfully!', 'success');
-                    } catch (err) {
-                        showFeedback('Failed to download PDF.', 'error');
-                    } finally {
-                        this.innerHTML = originalHTML;
-                        renderIcons(this);
-                    }
+                    } catch (err) { showFeedback('Failed to download PDF.', 'error'); } 
+                    finally { this.innerHTML = originalHTML; renderIcons(this); }
                 }, 300);
             });
 
-            // Mobile FAB bindings
             document.getElementById('btn-download-png-mobile').addEventListener('click', () => document.getElementById('btn-download-png').click());
             document.getElementById('btn-download-pdf-mobile').addEventListener('click', () => document.getElementById('btn-download-pdf').click());
 
-            // Print / Median Bridge
             document.getElementById('btn-print').addEventListener('click', async function() {
                 const originalHTML = replaceButtonWithLoader(this, false);
-
                 const isMedian = typeof median !== 'undefined';
-
                 if (isMedian) {
                     setTimeout(async () => {
                         try {
@@ -1724,28 +1740,18 @@
                             pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 210, 297);
                             const pdfDataUri = pdf.output('datauristring');
                             
-                            if (median.share && median.share.downloadFile) {
-                                median.share.downloadFile({ url: pdfDataUri, open: true });
-                            } else {
-                                window.location.href = pdfDataUri;
-                            }
+                            if (median.share && median.share.downloadFile) { median.share.downloadFile({ url: pdfDataUri, open: true }); } 
+                            else { window.location.href = pdfDataUri; }
                             showFeedback('Opening PDF for Print...', 'success');
-                        } catch (err) {
-                            showFeedback('Failed to prepare document for printing.', 'error');
-                        } finally {
-                            this.innerHTML = originalHTML;
-                            renderIcons(this);
-                        }
+                        } catch (err) { showFeedback('Failed to prepare document for printing.', 'error'); } 
+                        finally { this.innerHTML = originalHTML; renderIcons(this); }
                     }, 300);
                 } else {
                     setTimeout(() => {
                         const wasShowingOutlines = showOutlines;
                         if (showOutlines) { showOutlines = false; updateAllCanvasStyles(); }
-                        
                         window.print();
-                        
-                        this.innerHTML = originalHTML;
-                        renderIcons(this);
+                        this.innerHTML = originalHTML; renderIcons(this);
                         if (wasShowingOutlines) { showOutlines = true; updateAllCanvasStyles(); }
                     }, 300);
                 }
