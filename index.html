@@ -1,8 +1,9 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ROYZ PrintStudio - Modern Print Editor</title>
+    <title>Policy Cover Studio - Modern Print Editor</title>
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -164,113 +165,84 @@
         
         .container-max { max-width: 1280px; margin: 0 auto; }
 
-        /* --- Hero Section --- */
-        .hero-card {
-            background-color: white; border-radius: 24px; padding: 24px; box-shadow: var(--shadow-soft);
-            border: 1px solid var(--bg-slate-100); display: flex; flex-direction: column; gap: 24px;
-            position: relative; overflow: hidden; margin-bottom: 32px;
+        /* --- Google Form Style UI for Data Tab --- */
+        .form-container {
+            max-width: 768px; margin: 0 auto; width: 100%;
         }
-        @media (min-width: 768px) { .hero-card { border-radius: 32px; padding: 40px; flex-direction: row; align-items: center; justify-content: space-between; } }
-        .hero-card:hover { box-shadow: var(--shadow-soft-hover); }
-        
-        .hero-decor-1 { position: absolute; right: -80px; top: -80px; width: 256px; height: 256px; background-color: var(--m3-primary-container); border-radius: 50%; filter: blur(48px); opacity: 0.4; transition: opacity 0.3s; }
-        .hero-decor-2 { position: absolute; left: -80px; bottom: -80px; width: 256px; height: 256px; background-color: var(--m3-tertiary-container); border-radius: 50%; filter: blur(48px); opacity: 0.4; transition: opacity 0.3s; }
-        .hero-card:hover .hero-decor-1, .hero-card:hover .hero-decor-2 { opacity: 0.6; }
 
-        .hero-content { position: relative; z-index: 10; flex: 1; }
-        .badge { display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px; border-radius: 9999px; background-color: var(--m3-primary-container); color: var(--m3-primary); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.025em; margin-bottom: 12px; }
-        @media (min-width: 768px) { .badge { font-size: 12px; margin-bottom: 16px; } }
-        .badge svg { width: 14px; height: 14px; fill: currentColor; }
-
-        .hero-title { font-size: 30px; font-weight: 900; color: var(--text-slate-800); letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 8px; }
-        @media (min-width: 768px) { .hero-title { font-size: 48px; margin-bottom: 12px; } }
-        .hero-title .br-hide { display: none; }
-        @media (min-width: 1024px) { .hero-title .br-hide { display: block; } }
-        .text-gradient { background: linear-gradient(135deg, var(--m3-primary), var(--m3-tertiary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .form-header-card {
+            background-color: white; border-radius: 8px; padding: 24px;
+            border: 1px solid var(--bg-slate-200); border-top: 10px solid var(--m3-primary);
+            margin-bottom: 12px; display: flex; flex-direction: column; gap: 12px;
+        }
+        @media (min-width: 768px) { .form-header-card { padding: 32px; margin-bottom: 16px; } }
         
-        .hero-subtitle { color: var(--text-slate-500); font-size: 15px; font-weight: 500; max-width: 576px; }
-        @media (min-width: 768px) { .hero-subtitle { font-size: 18px; } }
-
-        .hero-action { position: relative; z-index: 10; width: 100%; }
-        @media (min-width: 768px) { .hero-action { width: auto; } }
+        .form-header-title { font-size: 24px; font-weight: 400; color: var(--text-slate-800); line-height: 1.3; }
+        @media (min-width: 768px) { .form-header-title { font-size: 32px; } }
         
+        .form-header-desc { font-size: 14px; color: var(--text-slate-600); margin-bottom: 8px; }
+
         .btn-upload {
-            display: flex; align-items: center; justify-content: center; gap: 12px; background-color: var(--m3-primary);
-            color: white; padding: 16px 24px; border-radius: 20px; cursor: pointer; box-shadow: var(--shadow-3);
-            transition: all 0.2s; font-weight: 700; font-size: 16px; width: 100%;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            color: var(--m3-primary); font-weight: 600; font-size: 14px; cursor: pointer;
+            padding: 8px 16px; border: 1px solid var(--bg-slate-200); border-radius: 6px; transition: all 0.2s;
         }
-        @media (min-width: 768px) { .btn-upload { padding: 20px 32px; border-radius: 24px; font-size: 18px; } }
-        .btn-upload:hover { background-color: #1d4ed8; box-shadow: var(--shadow-4); transform: translateY(-4px); }
-        .btn-upload:active { transform: scale(0.95); }
-        .btn-upload .icon-wrapper { background-color: rgba(255,255,255,0.2); padding: 8px; border-radius: 50%; display: flex; }
-        .btn-upload svg { width: 20px; height: 20px; }
-        @media (min-width: 768px) { .btn-upload svg { width: 24px; height: 24px; } }
+        .btn-upload:hover { background-color: var(--m3-surface-container); border-color: var(--m3-primary-container); }
+        .btn-upload:active { transform: scale(0.98); }
+        .btn-upload svg { width: 18px; height: 18px; }
 
+        .form-card {
+            background-color: white; border-radius: 8px; padding: 24px;
+            border: 1px solid var(--bg-slate-200); margin-bottom: 12px;
+            position: relative; transition: box-shadow 0.2s;
+            display: flex; flex-direction: column; gap: 16px;
+        }
+        .form-card:focus-within { box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+        .form-card:focus-within::before {
+            content: ''; position: absolute; left: -1px; top: -1px; bottom: -1px; width: 6px;
+            background-color: var(--m3-primary); border-top-left-radius: 8px; border-bottom-left-radius: 8px;
+        }
+        
+        .form-card-title {
+            font-size: 15px; font-weight: 500; color: var(--text-slate-800); display: flex; align-items: center; gap: 4px;
+        }
+        
+        .form-input {
+            width: 100%; border: none; border-bottom: 1px solid var(--text-slate-400);
+            padding: 12px 0; font-size: 16px; color: var(--text-slate-800); background: transparent; transition: border-bottom-color 0.2s;
+            resize: none; font-family: inherit; line-height: 1.6; min-height: 48px; display: block;
+        }
+        .form-input:focus {
+            outline: none; border-bottom: 2px solid var(--m3-primary); padding-bottom: 11px; /* Account for extra border pixel */
+        }
+        textarea.form-input {
+            overflow-y: hidden; /* Prevents scrollbar briefly appearing during auto-resize */
+        }
+        
         /* --- Feedback Banner --- */
         .feedback-banner {
-            margin-bottom: 24px; padding: 16px; border-radius: 20px; font-size: 15px; font-weight: 700;
+            margin-bottom: 16px; padding: 16px; border-radius: 8px; font-size: 14px; font-weight: 600;
             display: flex; align-items: center; gap: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); border: 1px solid;
         }
-        @media (min-width: 768px) { .feedback-banner { padding: 24px; font-size: 18px; } }
-        .feedback-banner svg { width: 24px; height: 24px; flex-shrink: 0; }
-        @media (min-width: 768px) { .feedback-banner svg { width: 28px; height: 28px; } }
+        .feedback-banner svg { width: 20px; height: 20px; flex-shrink: 0; }
         
         .feedback-success { background-color: #c4eebb; color: #002106; border-color: rgba(20, 108, 46, 0.2); }
         .feedback-success svg { color: var(--m3-tertiary); }
         .feedback-error { background-color: #fef2f2; color: #7f1d1d; border-color: #fecaca; }
         .feedback-error svg { color: #dc2626; }
 
-        /* --- Section Titles --- */
+        /* --- Section Titles (Settings) --- */
         .section-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
         .section-header h3 { font-size: 20px; font-weight: 900; color: var(--text-slate-800); letter-spacing: -0.02em; }
         @media (min-width: 768px) { .section-header h3 { font-size: 24px; } }
         .section-divider { height: 1px; background-color: var(--bg-slate-200); flex: 1; }
 
-        /* --- Grids --- */
-        .data-grid { display: grid; grid-template-columns: repeat(1, 1fr); gap: 16px; }
-        @media (min-width: 640px) { .data-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (min-width: 1024px) { .data-grid { grid-template-columns: repeat(3, 1fr); gap: 24px; } }
-        @media (min-width: 1280px) { .data-grid { grid-template-columns: repeat(4, 1fr); } }
-
+        /* --- Grids (Settings) --- */
         .settings-grid-main { display: grid; grid-template-columns: repeat(1, 1fr); gap: 16px; margin-bottom: 32px; }
         @media (min-width: 768px) { .settings-grid-main { grid-template-columns: repeat(2, 1fr); gap: 24px; margin-bottom: 48px; } }
 
         .settings-list-grid { display: grid; grid-template-columns: repeat(1, 1fr); gap: 16px; }
         @media (min-width: 1024px) { .settings-list-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; } }
-
-        /* --- Components: Data Card --- */
-        .data-card {
-            background-color: white; border-radius: 24px; padding: 20px; box-shadow: var(--shadow-soft);
-            border: 1px solid var(--bg-slate-100); display: flex; flex-direction: column; transition: all 0.3s;
-        }
-        .data-card:hover { box-shadow: var(--shadow-soft-hover); }
-        
-        .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; width: 100%; }
-        .icon-box { width: 40px; height: 40px; border-radius: 14px; background-color: var(--m3-surface-container); color: var(--m3-primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        @media (min-width: 768px) { .icon-box { width: 48px; height: 48px; } }
-        .icon-box svg { width: 20px; height: 20px; stroke-width: 2.5px; }
-        @media (min-width: 768px) { .icon-box svg { width: 24px; height: 24px; } }
-        .card-header h3 { font-weight: 700; color: var(--text-slate-800); font-size: 16px; letter-spacing: -0.02em; flex: 1; }
-        @media (min-width: 768px) { .card-header h3 { font-size: 17px; } }
-
-        /* Floating Input */
-        .input-floating { position: relative; width: 100%; }
-        .input-floating input, .input-floating textarea {
-            width: 100%; padding: 24px 16px 8px 16px; background-color: var(--bg-slate-50);
-            border: 1px solid rgba(226, 232, 240, 0.6); border-radius: 16px; color: var(--text-slate-800);
-            font-weight: 700; font-size: 14px; transition: all 0.2s; resize: none;
-        }
-        @media (min-width: 768px) { .input-floating input, .input-floating textarea { font-size: 15px; } }
-        .input-floating input:focus, .input-floating textarea:focus {
-            background-color: white; border-color: var(--m3-primary); box-shadow: 0 0 0 3px rgba(11, 87, 208, 0.2);
-        }
-        .input-floating label {
-            position: absolute; left: 16px; top: 8px; font-size: 11px; color: var(--text-slate-400); font-weight: 700;
-            text-transform: uppercase; letter-spacing: 0.025em; pointer-events: none; transition: all 0.2s;
-        }
-        .input-floating input:placeholder-shown:not(:focus) + label { top: 50%; transform: translateY(-50%); font-size: 14px; font-weight: 500; }
-        .input-floating textarea:placeholder-shown:not(:focus) + label { top: 16px; font-size: 14px; font-weight: 500; }
-        .input-floating input:focus + label, .input-floating textarea:focus + label { top: 8px; transform: none; font-size: 11px; font-weight: 700; color: var(--m3-primary); }
 
         /* --- Components: Settings Global Cards --- */
         .guide-card {
@@ -401,7 +373,12 @@
         .fab.pdf { background-color: var(--m3-primary-container); color: var(--m3-on-primary-container); }
         .fab svg { width: 24px; height: 24px; }
 
-        .canvas-wrapper { width: 100%; max-width: 100%; display: flex; justify-content: center; transform-origin: top center; position: relative; margin-top: 8px; margin-bottom: 48px; }
+        /* Fixed wrapper logic for precise mobile scaling centering */
+        .canvas-wrapper { 
+            position: relative; 
+            margin: 8px auto 48px auto; /* Margin auto centers the exact scaled width perfectly */
+            overflow: visible; /* Prevent clipping */
+        }
         @media (min-width: 768px) { .canvas-wrapper { margin-top: 32px; } }
 
         .dot-pattern { background-image: radial-gradient(var(--bg-slate-300) 1px, transparent 1px); background-size: 20px 20px; }
@@ -480,7 +457,7 @@
                 <i data-icon="printer"></i>
             </div>
             <h1 class="header-title">
-                ROYZ<span class="primary">Print</span><span class="secondary">Studio</span>
+                Policy<span class="primary">Cover</span><span class="secondary">Studio</span>
             </h1>
         </div>
         <div class="header-actions">
@@ -505,30 +482,18 @@
     <!-- Main Content -->
     <main class="main-content">
         
-        <!-- Tab 1: DATA -->
+        <!-- Tab 1: DATA (Google Form Styled) -->
         <div id="view-data" class="tab-view hidden">
-            <div class="container-max">
+            <div class="form-container">
                 
-                <div class="hero-card">
-                    <div class="hero-decor-1"></div>
-                    <div class="hero-decor-2"></div>
+                <div class="form-header-card">
+                    <h2 class="form-header-title">Document Data Filler</h2>
+                    <p class="form-header-desc">Upload a Policy PDF to auto-extract and map data fields automatically, or fill them out manually below.</p>
                     
-                    <div class="hero-content">
-                        <div class="badge">
-                            <i data-icon="zap"></i> Smart Fill
-                        </div>
-                        <h2 class="hero-title">
-                            Populate fields <br class="br-hide"/> <span class="text-gradient">instantly.</span>
-                        </h2>
-                        <p class="hero-subtitle">
-                            Upload a Policy PDF to auto-extract and map data fields automatically.
-                        </p>
-                    </div>
-
-                    <div class="hero-action">
+                    <div style="margin-top: 8px;">
                         <label class="btn-upload">
-                            <div class="icon-wrapper"><i data-icon="file-up"></i></div>
-                            <span id="pdf-upload-text">Upload PDF</span>
+                            <i data-icon="file-up"></i>
+                            <span id="pdf-upload-text">Auto-Fill from PDF</span>
                             <input type="file" accept=".pdf" id="pdf-upload" class="hidden" />
                         </label>
                     </div>
@@ -539,12 +504,7 @@
                     <span id="pdf-feedback-text"></span>
                 </div>
 
-                <div class="section-header">
-                    <h3>Document Data</h3>
-                    <div class="section-divider"></div>
-                </div>
-
-                <div id="data-fields-container" class="data-grid">
+                <div id="data-fields-container">
                     <!-- Dynamic Data Cards -->
                 </div>
             </div>
@@ -583,10 +543,10 @@
             <div class="container-max">
                 
                 <div style="margin-bottom:32px;">
-                    <h2 class="hero-title" style="margin-bottom:8px;">
+                    <h2 class="form-header-title" style="margin-bottom:8px; font-weight: 900;">
                         Perfect <span style="color:var(--m3-primary)">Alignment.</span>
                     </h2>
-                    <p class="hero-subtitle">Fine-tune coordinates, typography, and visual bounds.</p>
+                    <p style="color: var(--text-slate-500); font-size: 15px; font-weight: 500;">Fine-tune coordinates, typography, and visual bounds.</p>
                 </div>
 
                 <div class="settings-grid-main">
@@ -644,6 +604,7 @@
     <!-- Bottom Nav -->
     <nav class="bottom-nav hide-on-print">
         <div class="nav-container">
+            <!-- Modified active state setup on initial render -->
             <button onclick="switchTab('data')" id="nav-data" class="nav-btn active">
                 <div class="nav-pill"></div>
                 <div class="nav-content">
@@ -661,7 +622,7 @@
             <button onclick="switchTab('settings')" id="nav-settings" class="nav-btn">
                 <div class="nav-pill"></div>
                 <div class="nav-content">
-                    <i data-icon="sliders"></i>
+                    <i data-icon="settings"></i>
                     <span class="nav-text">Settings</span>
                 </div>
             </button>
@@ -669,7 +630,7 @@
     </nav>
 
     <script>
-        // --- SVG Icon Engine (Replacing Lucide) ---
+        // --- SVG Icon Engine ---
         const SVG_ICONS = {
             'printer': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"/><rect width="12" height="8" x="6" y="14" rx="1"/></svg>',
             'rotate-ccw': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>',
@@ -686,7 +647,7 @@
             'eye-off': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>',
             'file-text': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>',
             'layout-template': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="7" x="3" y="3" rx="1"/><rect width="9" height="7" x="3" y="14" rx="1"/><rect width="5" height="7" x="16" y="14" rx="1"/></svg>',
-            'sliders': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="21" y2="14"/><line x1="4" x2="20" y1="10" y2="3"/><line x1="12" x2="12" y1="21" y2="12"/><line x1="12" x2="12" y1="8" y2="3"/><line x1="8" x2="16" y1="14" y2="14"/><line x1="8" x2="16" y1="8" y2="8"/></svg>',
+            'settings': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>',
             'car': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>',
             'calendar': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>',
             'user': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
@@ -764,17 +725,25 @@
         let showOutlines = false;
         let currentScale = 1;
 
-        // Core Responsive Logic
+        // Core Responsive Logic - FIX FOR MOBILE DISORGANIZATION
         function adjustCanvasScale() {
             const wrapper = document.getElementById('canvas-wrapper');
             const container = document.getElementById('print-container');
-            if (!wrapper || !container) return;
+            if (!wrapper || !container || wrapper.parentElement.clientWidth === 0) return;
 
+            // Calculate scale based strictly on the available parent width
             const sidePadding = window.innerWidth < 640 ? 32 : 64; 
             const availableWidth = wrapper.parentElement.clientWidth - sidePadding;
             
             currentScale = Math.min(1, availableWidth / A4_WIDTH_PX);
+            
+            // Scale and align origin 
+            container.style.transformOrigin = 'top left';
             container.style.transform = `scale(${currentScale})`;
+            
+            // Explicitly set the wrapper size to the perfectly scaled size 
+            // so margin: auto can correctly position it in the dead center.
+            wrapper.style.width = `${A4_WIDTH_PX * currentScale}px`;
             wrapper.style.height = `${A4_HEIGHT_PX * currentScale}px`;
         }
         window.addEventListener('resize', adjustCanvasScale);
@@ -841,7 +810,14 @@
 
             Object.keys(data).forEach(key => {
                 const input = document.getElementById(`input-data-${key}`);
-                if (input) input.value = data[key];
+                if (input) {
+                    input.value = data[key];
+                    if(input.tagName.toLowerCase() === 'textarea') {
+                        // trigger auto resize for textarea updates
+                        input.style.height = 'auto';
+                        input.style.height = input.scrollHeight + 'px';
+                    }
+                }
             });
             updateAllCanvasStyles();
         }
@@ -860,7 +836,6 @@
                 iconWrap.innerHTML = '<i id="pdf-feedback-icon" data-icon="alert-circle"></i>';
             }
             
-            // Re-render specifically this area to replace the i tag with SVG
             const existingIcon = document.getElementById('pdf-feedback-icon');
             if(existingIcon) existingIcon.replaceWith(iconWrap.firstChild);
             
@@ -895,7 +870,10 @@
                 else btn.classList.remove('active');
             });
 
-            if(tabId === 'preview') requestAnimationFrame(adjustCanvasScale);
+            if(tabId === 'preview') {
+                // Ensure DOM has layout time before scaling computation
+                setTimeout(() => requestAnimationFrame(adjustCanvasScale), 10);
+            }
         }
 
         function updateCanvasElementStyle(key) {
@@ -949,23 +927,15 @@
         // --- Component Builders (HTML Generation) ---
         function buildDataCard(config) {
             const { label, key, isTextarea } = config;
-            const iconName = getIconForKey(key);
+            
+            // Replaced custom floating with Google Form Style
             const inputElement = isTextarea 
-                ? `<div class="input-floating">
-                     <textarea id="input-data-${key}" rows="2" placeholder=" "></textarea>
-                     <label>${label}</label>
-                   </div>`
-                : `<div class="input-floating">
-                     <input type="text" id="input-data-${key}" placeholder=" " />
-                     <label>${label}</label>
-                   </div>`;
+                ? `<textarea id="input-data-${key}" class="form-input" rows="3" placeholder="Your answer" oninput="this.style.height = 'auto'; this.style.height = this.scrollHeight + 'px'"></textarea>`
+                : `<input type="text" id="input-data-${key}" class="form-input" placeholder="Your answer" />`;
 
             return `
-            <div class="data-card">
-                <div class="card-header">
-                    <div class="icon-box"><i data-icon="${iconName}"></i></div>
-                    <h3>${label}</h3>
-                </div>
+            <div class="form-card">
+                <div class="form-card-title">${label} <span style="color: #dc2626;">*</span></div>
                 ${inputElement}
             </div>`;
         }
@@ -1033,7 +1003,7 @@
         }
 
         function initApp() {
-            renderIcons(); // Initial global render
+            renderIcons();
 
             const dataContainer = document.getElementById('data-fields-container');
             const settingsContainer = document.getElementById('settings-fields-container');
@@ -1054,7 +1024,13 @@
                 canvasContainer.appendChild(el);
 
                 const dataInput = document.getElementById(`input-data-${key}`);
-                if (dataInput) dataInput.value = data[key];
+                if (dataInput) {
+                    dataInput.value = data[key];
+                    if(dataInput.tagName.toLowerCase() === 'textarea') {
+                        dataInput.style.height = 'auto';
+                        dataInput.style.height = dataInput.scrollHeight + 'px';
+                    }
+                }
 
                 updateCanvasElementStyle(key);
 
@@ -1134,11 +1110,11 @@
                 });
             });
 
-            // Render newly injected SVG icons
             renderIcons(dataContainer);
             renderIcons(settingsContainer);
             
-            switchTab('preview');
+            // NEW DEFAULT: Launch directly into the DATA tab
+            switchTab('data');
         }
 
         // --- Execution ---
@@ -1191,7 +1167,7 @@
 
             // Interactive Outlines Toggle
             document.getElementById('bounds-toggle-container').addEventListener('click', (e) => {
-                if(e.target.tagName.toLowerCase() === 'input') return; // let checkbox handle natively
+                if(e.target.tagName.toLowerCase() === 'input') return;
                 const checkbox = document.getElementById('show-outlines');
                 checkbox.checked = !checkbox.checked;
                 checkbox.dispatchEvent(new Event('change'));
