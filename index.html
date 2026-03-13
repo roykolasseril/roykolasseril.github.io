@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -157,18 +156,90 @@
         .btn-primary .text-hide { display: none; }
         @media (min-width: 640px) { .btn-primary .text-hide { display: inline; } }
 
-        /* --- Main Layout --- */
+        /* --- Main Layout & Side/Bottom Navigation --- */
+        .app-body {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+            background-color: var(--m3-surface-container);
+        }
+
         .main-content { flex: 1; position: relative; overflow: hidden; }
-        .tab-view { position: absolute; top: 0; left: 0; right: 0; bottom: 0; overflow-y: auto; padding: 16px; padding-bottom: 128px; }
-        @media (min-width: 640px) { .tab-view { padding: 24px; padding-bottom: 128px; } }
-        @media (min-width: 768px) { .tab-view { padding: 32px; padding-bottom: 128px; } }
+        
+        .tab-view { 
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0; 
+            overflow-y: auto; padding: 16px; padding-bottom: 96px; scroll-behavior: smooth;
+        }
+        @media (min-width: 640px) { .tab-view { padding: 24px; padding-bottom: 96px; } }
+        @media (min-width: 768px) { .tab-view { padding: 32px; padding-bottom: 48px; } }
         
         .container-max { max-width: 1280px; margin: 0 auto; }
 
-        /* --- Google Form Style UI for Data Tab --- */
-        .form-container {
-            max-width: 768px; margin: 0 auto; width: 100%;
+        /* Responsive Navigation (Bottom on Mobile, Side on Desktop) */
+        .app-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 76px;
+            background-color: white; border-top: 1px solid rgba(226, 232, 240, 0.8);
+            display: flex; justify-content: center; align-items: center;
+            padding: 0 8px; padding-bottom: env(safe-area-inset-bottom); z-index: 40;
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.05);
         }
+        @media (min-width: 768px) {
+            .app-nav {
+                position: relative; width: 96px; height: 100%; bottom: auto; left: auto;
+                border-top: none; border-right: 1px solid rgba(226, 232, 240, 0.8);
+                flex-direction: column; justify-content: flex-start;
+                padding: 24px 0; box-shadow: 4px 0 24px rgba(0,0,0,0.02);
+                overflow-y: auto; overflow-x: hidden; z-index: 30;
+            }
+        }
+
+        .nav-container { display: flex; align-items: center; justify-content: space-around; width: 100%; max-width: 448px; }
+        @media (min-width: 768px) {
+            .nav-container { flex-direction: column; justify-content: flex-start; height: auto; gap: 16px; }
+        }
+
+        .nav-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 80px; height: 56px; position: relative; color: var(--text-slate-400); transition: color 0.3s; }
+        @media (min-width: 768px) { .nav-btn { width: 72px; height: 64px; } }
+        
+        .nav-pill { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--m3-primary-container); border-radius: 9999px; transform: scale(0.5); opacity: 0; transition: all 0.3s; transform-origin: center; }
+        @media (min-width: 768px) { .nav-pill { border-radius: 16px; } }
+
+        .nav-content { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; margin-top: 4px; }
+        .nav-content svg { width: 20px; height: 20px; margin-bottom: 4px; transition: transform 0.2s; }
+        @media (min-width: 768px) { .nav-content svg { width: 24px; height: 24px; } }
+        .nav-btn:active .nav-content svg { transform: scale(0.9); }
+        .nav-text { font-size: 11px; font-weight: 700; letter-spacing: 0.025em; }
+        @media (min-width: 768px) { .nav-text { font-size: 12px; } }
+
+        .nav-btn.active { color: var(--m3-primary); }
+        .nav-btn.active .nav-pill { transform: scale(1); opacity: 1; }
+
+        /* --- Quick Vertical Scroll Helper --- */
+        .quick-scroll {
+            position: fixed; right: 16px; top: 50%; transform: translateY(-50%);
+            background-color: white; border-radius: 9999px; box-shadow: var(--shadow-3);
+            border: 1px solid var(--bg-slate-200); display: flex; flex-direction: column;
+            align-items: center; padding: 8px 4px; gap: 8px; z-index: 50;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s, transform 0.3s;
+        }
+        .quick-scroll.visible { opacity: 1; pointer-events: auto; }
+        @media (min-width: 768px) { .quick-scroll { right: 32px; padding: 12px 6px; gap: 12px; } }
+
+        .scroll-btn {
+            width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            color: var(--text-slate-600); background-color: transparent; transition: all 0.2s;
+        }
+        @media (min-width: 768px) { .scroll-btn { width: 44px; height: 44px; } }
+        .scroll-btn:hover { background-color: var(--bg-slate-100); color: var(--m3-primary); }
+        .scroll-btn:active { transform: scale(0.9); }
+        .scroll-btn svg { width: 20px; height: 20px; stroke-width: 2.5px; }
+        @media (min-width: 768px) { .scroll-btn svg { width: 24px; height: 24px; } }
+
+        .scroll-divider { width: 20px; height: 1px; background-color: var(--bg-slate-200); }
+
+        /* --- Google Form Style UI for Data Tab --- */
+        .form-container { max-width: 768px; margin: 0 auto; width: 100%; }
 
         .form-header-card {
             background-color: white; border-radius: 8px; padding: 24px;
@@ -213,10 +284,10 @@
             resize: none; font-family: inherit; line-height: 1.6; min-height: 48px; display: block;
         }
         .form-input:focus {
-            outline: none; border-bottom: 2px solid var(--m3-primary); padding-bottom: 11px; /* Account for extra border pixel */
+            outline: none; border-bottom: 2px solid var(--m3-primary); padding-bottom: 11px;
         }
         textarea.form-input {
-            overflow-y: hidden; /* Prevents scrollbar briefly appearing during auto-resize */
+            overflow-y: hidden;
         }
         
         /* --- Feedback Banner --- */
@@ -401,28 +472,6 @@
             transform: scale(1.02); z-index: 50;
         }
 
-        /* --- Bottom Navigation --- */
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; width: 100%; height: 76px; background-color: white;
-            border-top: 1px solid rgba(226, 232, 240, 0.8); display: flex; justify-content: center; align-items: center;
-            padding: 0 8px; padding-bottom: env(safe-area-inset-bottom); z-index: 40; box-shadow: 0 -10px 40px rgba(0,0,0,0.05);
-        }
-        @media (min-width: 768px) { .bottom-nav { height: 88px; } }
-        .nav-container { display: flex; align-items: center; justify-content: space-around; width: 100%; max-width: 448px; }
-        .nav-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 80px; height: 56px; position: relative; color: var(--text-slate-400); transition: color 0.3s; }
-        @media (min-width: 768px) { .nav-btn { width: 96px; height: 64px; } }
-        
-        .nav-pill { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--m3-primary-container); border-radius: 9999px; transform: scale(0.5); opacity: 0; transition: all 0.3s; transform-origin: center; }
-        .nav-content { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; margin-top: 4px; }
-        .nav-content svg { width: 20px; height: 20px; margin-bottom: 4px; transition: transform 0.2s; }
-        @media (min-width: 768px) { .nav-content svg { width: 24px; height: 24px; } }
-        .nav-btn:active .nav-content svg { transform: scale(0.9); }
-        .nav-text { font-size: 11px; font-weight: 700; letter-spacing: 0.025em; }
-        @media (min-width: 768px) { .nav-text { font-size: 12px; } }
-
-        .nav-btn.active { color: var(--m3-primary); }
-        .nav-btn.active .nav-pill { transform: scale(1); opacity: 1; }
-
         /* --- Print CSS --- */
         @media print {
             @page { size: A4; margin: 0; }
@@ -431,7 +480,7 @@
                 background: white !important; overflow: hidden !important;
                 -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
             }
-            .app-header, .bottom-nav, #view-data, #view-settings, .hide-on-print { display: none !important; }
+            .app-header, .app-nav, .quick-scroll, #view-data, #view-settings, .hide-on-print { display: none !important; }
             #view-preview {
                 display: block !important; position: absolute !important; left: 0 !important; top: 0 !important;
                 margin: 0 !important; padding: 0 !important; width: 210mm !important; height: 297mm !important;
@@ -479,155 +528,169 @@
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="main-content">
+    <div class="app-body">
         
-        <!-- Tab 1: DATA (Google Form Styled) -->
-        <div id="view-data" class="tab-view hidden">
-            <div class="form-container">
-                
-                <div class="form-header-card">
-                    <h2 class="form-header-title">Document Data Filler</h2>
-                    <p class="form-header-desc">Upload a Policy PDF to auto-extract and map data fields automatically, or fill them out manually below.</p>
-                    
-                    <div style="margin-top: 8px;">
-                        <label class="btn-upload">
-                            <i data-icon="file-up"></i>
-                            <span id="pdf-upload-text">Auto-Fill from PDF</span>
-                            <input type="file" accept=".pdf" id="pdf-upload" class="hidden" />
-                        </label>
+        <!-- App Navigation (Side Menu on Desktop, Bottom Menu on Mobile) -->
+        <nav class="app-nav hide-on-print">
+            <div class="nav-container">
+                <button onclick="switchTab('data')" id="nav-data" class="nav-btn active">
+                    <div class="nav-pill"></div>
+                    <div class="nav-content">
+                        <i data-icon="file-text"></i>
+                        <span class="nav-text">Data</span>
                     </div>
-                </div>
-                
-                <div id="pdf-feedback" class="feedback-banner hidden">
-                    <i id="pdf-feedback-icon" data-icon="check-circle-2"></i>
-                    <span id="pdf-feedback-text"></span>
-                </div>
-
-                <div id="data-fields-container">
-                    <!-- Dynamic Data Cards -->
-                </div>
+                </button>
+                <button onclick="switchTab('preview')" id="nav-preview" class="nav-btn">
+                    <div class="nav-pill"></div>
+                    <div class="nav-content">
+                        <i data-icon="layout-template"></i>
+                        <span class="nav-text">Preview</span>
+                    </div>
+                </button>
+                <button onclick="switchTab('settings')" id="nav-settings" class="nav-btn">
+                    <div class="nav-pill"></div>
+                    <div class="nav-content">
+                        <i data-icon="settings"></i>
+                        <span class="nav-text">Settings</span>
+                    </div>
+                </button>
             </div>
-        </div>
+        </nav>
 
-        <!-- Tab 2: PREVIEW -->
-        <div id="view-preview" class="tab-view dot-pattern preview-layout hidden">
+        <!-- Main Content Area -->
+        <main class="main-content">
             
-            <div class="floating-badge hide-on-print">
-                <div style="display:flex;align-items:center;gap:8px;">
-                    <div class="status-dot animate-pulse"></div>
-                    <span>Live Preview</span>
+            <!-- Tab 1: DATA (Google Form Styled) -->
+            <div id="view-data" class="tab-view hidden">
+                <div class="form-container">
+                    
+                    <div class="form-header-card">
+                        <h2 class="form-header-title">Document Data Filler</h2>
+                        <p class="form-header-desc">Upload a Policy PDF to auto-extract and map data fields automatically, or fill them out manually below.</p>
+                        
+                        <div style="margin-top: 8px;">
+                            <label class="btn-upload">
+                                <i data-icon="file-up"></i>
+                                <span id="pdf-upload-text">Auto-Fill from PDF</span>
+                                <input type="file" accept=".pdf" id="pdf-upload" class="hidden" />
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div id="pdf-feedback" class="feedback-banner hidden">
+                        <i id="pdf-feedback-icon" data-icon="check-circle-2"></i>
+                        <span id="pdf-feedback-text"></span>
+                    </div>
+
+                    <div id="data-fields-container">
+                        <!-- Dynamic Data Cards -->
+                    </div>
                 </div>
-                <div class="badge-divider"></div>
-                <span class="badge-text-dim">A4 Scaled</span>
             </div>
 
-            <div class="mobile-fabs hide-on-print">
-                <button id="btn-download-png-mobile" class="fab png">
-                    <i data-icon="image"></i>
-                </button>
-                <button id="btn-download-pdf-mobile" class="fab pdf">
-                    <i data-icon="file-down"></i>
-                </button>
-            </div>
-
-            <div id="canvas-wrapper" class="canvas-wrapper">
-                <div id="print-container" style="background-size: 100% 100%; background-repeat: no-repeat; background-position: center;">
-                    <!-- Draggable Elements -->
-                </div>
-            </div>
-        </div>
-
-        <!-- Tab 3: SETTINGS -->
-        <div id="view-settings" class="tab-view hidden">
-            <div class="container-max">
+            <!-- Tab 2: PREVIEW -->
+            <div id="view-preview" class="tab-view dot-pattern preview-layout hidden">
                 
-                <div style="margin-bottom:32px;">
-                    <h2 class="form-header-title" style="margin-bottom:8px; font-weight: 900;">
-                        Perfect <span style="color:var(--m3-primary)">Alignment.</span>
-                    </h2>
-                    <p style="color: var(--text-slate-500); font-size: 15px; font-weight: 500;">Fine-tune coordinates, typography, and visual bounds.</p>
-                </div>
-
-                <div class="settings-grid-main">
-                    <!-- Template Guide -->
-                    <div class="guide-card">
-                        <div class="guide-card-decor"></div>
-                        <div class="guide-card-content">
-                            <div class="guide-icon"><i data-icon="scan-line"></i></div>
-                            <h3>Template Guide</h3>
-                            <p>Upload a scanned form background to visually align fields perfectly.</p>
-                        </div>
-                        <label class="btn-amber">
-                            <i data-icon="image-plus"></i> Upload Scan
-                            <input type="file" accept="image/*" id="bg-upload" class="hidden" />
-                        </label>
+                <div class="floating-badge hide-on-print">
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <div class="status-dot animate-pulse"></div>
+                        <span>Live Preview</span>
                     </div>
+                    <div class="badge-divider"></div>
+                    <span class="badge-text-dim">A4 Scaled</span>
+                </div>
 
-                    <!-- Guides Toggle -->
-                    <div class="bounds-card">
-                        <div class="bounds-header">
-                            <div>
-                                <div class="bounds-icon"><i data-icon="focus"></i></div>
-                                <h3>Interactive Bounds</h3>
-                                <p>Reveal border outlines in preview mode to drag and reposition elements.</p>
-                            </div>
-                        </div>
-                        <label class="toggle-row" id="bounds-toggle-container">
-                            <div class="toggle-label-group">
-                                <div id="guide-icon-wrap" class="toggle-icon-wrap">
-                                    <i id="guide-icon-on" data-icon="eye" class="hidden"></i>
-                                    <i id="guide-icon-off" data-icon="eye-off"></i>
-                                </div>
-                                <span class="toggle-text">Show Outlines</span>
-                            </div>
-                            <div id="guide-toggle-track" class="toggle-track">
-                                <div id="guide-toggle-thumb" class="toggle-thumb"></div>
-                            </div>
-                            <input type="checkbox" id="show-outlines" class="hidden" />
-                        </label>
+                <div class="mobile-fabs hide-on-print">
+                    <button id="btn-download-png-mobile" class="fab png">
+                        <i data-icon="image"></i>
+                    </button>
+                    <button id="btn-download-pdf-mobile" class="fab pdf">
+                        <i data-icon="file-down"></i>
+                    </button>
+                </div>
+
+                <div id="canvas-wrapper" class="canvas-wrapper">
+                    <div id="print-container" style="background-size: 100% 100%; background-repeat: no-repeat; background-position: center;">
+                        <!-- Draggable Elements -->
                     </div>
-                </div>
-
-                <div class="section-header">
-                    <h3>Element Properties</h3>
-                    <div class="section-divider"></div>
-                </div>
-
-                <div id="settings-fields-container" class="settings-list-grid">
-                    <!-- Dynamic Setting Cards -->
                 </div>
             </div>
-        </div>
-    </main>
 
-    <!-- Bottom Nav -->
-    <nav class="bottom-nav hide-on-print">
-        <div class="nav-container">
-            <!-- Modified active state setup on initial render -->
-            <button onclick="switchTab('data')" id="nav-data" class="nav-btn active">
-                <div class="nav-pill"></div>
-                <div class="nav-content">
-                    <i data-icon="file-text"></i>
-                    <span class="nav-text">Data</span>
+            <!-- Tab 3: SETTINGS -->
+            <div id="view-settings" class="tab-view hidden">
+                <div class="container-max">
+                    
+                    <div style="margin-bottom:32px;">
+                        <h2 class="form-header-title" style="margin-bottom:8px; font-weight: 900;">
+                            Perfect <span style="color:var(--m3-primary)">Alignment.</span>
+                        </h2>
+                        <p style="color: var(--text-slate-500); font-size: 15px; font-weight: 500;">Fine-tune coordinates, typography, and visual bounds.</p>
+                    </div>
+
+                    <div class="settings-grid-main">
+                        <!-- Template Guide -->
+                        <div class="guide-card">
+                            <div class="guide-card-decor"></div>
+                            <div class="guide-card-content">
+                                <div class="guide-icon"><i data-icon="scan-line"></i></div>
+                                <h3>Template Guide</h3>
+                                <p>Upload a scanned form background to visually align fields perfectly.</p>
+                            </div>
+                            <label class="btn-amber">
+                                <i data-icon="image-plus"></i> Upload Scan
+                                <input type="file" accept="image/*" id="bg-upload" class="hidden" />
+                            </label>
+                        </div>
+
+                        <!-- Guides Toggle -->
+                        <div class="bounds-card">
+                            <div class="bounds-header">
+                                <div>
+                                    <div class="bounds-icon"><i data-icon="focus"></i></div>
+                                    <h3>Interactive Bounds</h3>
+                                    <p>Reveal border outlines in preview mode to drag and reposition elements.</p>
+                                </div>
+                            </div>
+                            <label class="toggle-row" id="bounds-toggle-container">
+                                <div class="toggle-label-group">
+                                    <div id="guide-icon-wrap" class="toggle-icon-wrap">
+                                        <i id="guide-icon-on" data-icon="eye" class="hidden"></i>
+                                        <i id="guide-icon-off" data-icon="eye-off"></i>
+                                    </div>
+                                    <span class="toggle-text">Show Outlines</span>
+                                </div>
+                                <div id="guide-toggle-track" class="toggle-track">
+                                    <div id="guide-toggle-thumb" class="toggle-thumb"></div>
+                                </div>
+                                <input type="checkbox" id="show-outlines" class="hidden" />
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="section-header">
+                        <h3>Element Properties</h3>
+                        <div class="section-divider"></div>
+                    </div>
+
+                    <div id="settings-fields-container" class="settings-list-grid">
+                        <!-- Dynamic Setting Cards -->
+                    </div>
                 </div>
-            </button>
-            <button onclick="switchTab('preview')" id="nav-preview" class="nav-btn">
-                <div class="nav-pill"></div>
-                <div class="nav-content">
-                    <i data-icon="layout-template"></i>
-                    <span class="nav-text">Preview</span>
-                </div>
-            </button>
-            <button onclick="switchTab('settings')" id="nav-settings" class="nav-btn">
-                <div class="nav-pill"></div>
-                <div class="nav-content">
-                    <i data-icon="settings"></i>
-                    <span class="nav-text">Settings</span>
-                </div>
-            </button>
-        </div>
-    </nav>
+            </div>
+
+            <!-- Floating Vertical Scroll Assistant -->
+            <div class="quick-scroll hide-on-print" id="quickScrollNav">
+                <button class="scroll-btn" onclick="scrollActiveTab(-1)" title="Scroll Up">
+                    <i data-icon="chevron-up"></i>
+                </button>
+                <div class="scroll-divider"></div>
+                <button class="scroll-btn" onclick="scrollActiveTab(1)" title="Scroll Down">
+                    <i data-icon="chevron-down"></i>
+                </button>
+            </div>
+            
+        </main>
+    </div>
 
     <script>
         // --- SVG Icon Engine ---
@@ -657,6 +720,7 @@
             'indian-rupee': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12"/><path d="M6 8h12"/><path d="m6 13 8.5 8"/><path d="M6 13h3"/><path d="M9 13c6.667 0 6.667-10 0-10"/></svg>',
             'type': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" x2="15" y1="20" y2="20"/><line x1="12" x2="12" y1="4" y2="20"/></svg>',
             'chevron-down': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>',
+            'chevron-up': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>',
             'loader-2': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>'
         };
 
@@ -725,28 +789,57 @@
         let showOutlines = false;
         let currentScale = 1;
 
-        // Core Responsive Logic - FIX FOR MOBILE DISORGANIZATION
+        // Core Responsive Logic
         function adjustCanvasScale() {
             const wrapper = document.getElementById('canvas-wrapper');
             const container = document.getElementById('print-container');
             if (!wrapper || !container || wrapper.parentElement.clientWidth === 0) return;
 
-            // Calculate scale based strictly on the available parent width
             const sidePadding = window.innerWidth < 640 ? 32 : 64; 
             const availableWidth = wrapper.parentElement.clientWidth - sidePadding;
             
             currentScale = Math.min(1, availableWidth / A4_WIDTH_PX);
             
-            // Scale and align origin 
             container.style.transformOrigin = 'top left';
             container.style.transform = `scale(${currentScale})`;
             
-            // Explicitly set the wrapper size to the perfectly scaled size 
-            // so margin: auto can correctly position it in the dead center.
             wrapper.style.width = `${A4_WIDTH_PX * currentScale}px`;
             wrapper.style.height = `${A4_HEIGHT_PX * currentScale}px`;
         }
-        window.addEventListener('resize', adjustCanvasScale);
+
+        // Quick Vertical Scroll Assistant Logic
+        function scrollActiveTab(direction) {
+            const activeTab = document.querySelector('.tab-view:not(.hidden)');
+            if(!activeTab) return;
+            const scrollAmount = window.innerHeight * 0.5; // Move by half viewport height
+            if (direction === -1) {
+                activeTab.scrollBy({ top: -scrollAmount, behavior: 'smooth' });
+            } else {
+                activeTab.scrollBy({ top: scrollAmount, behavior: 'smooth' });
+            }
+        }
+
+        function updateQuickScrollVisibility() {
+            const activeTab = document.querySelector('.tab-view:not(.hidden)');
+            const quickScroll = document.getElementById('quickScrollNav');
+            
+            if (!activeTab || activeTab.id === 'view-preview') {
+                quickScroll.classList.remove('visible');
+                return;
+            }
+            
+            // Show side-scroller only if the tab's content extends beyond its visible area
+            if (activeTab.scrollHeight > activeTab.clientHeight + 20) {
+                quickScroll.classList.add('visible');
+            } else {
+                quickScroll.classList.remove('visible');
+            }
+        }
+
+        window.addEventListener('resize', () => {
+            adjustCanvasScale();
+            updateQuickScrollVisibility();
+        });
 
         // PDF Extraction Parser
         function parseInsuranceData(text) {
@@ -813,7 +906,6 @@
                 if (input) {
                     input.value = data[key];
                     if(input.tagName.toLowerCase() === 'textarea') {
-                        // trigger auto resize for textarea updates
                         input.style.height = 'auto';
                         input.style.height = input.scrollHeight + 'px';
                     }
@@ -870,10 +962,12 @@
                 else btn.classList.remove('active');
             });
 
-            if(tabId === 'preview') {
-                // Ensure DOM has layout time before scaling computation
-                setTimeout(() => requestAnimationFrame(adjustCanvasScale), 10);
-            }
+            setTimeout(() => {
+                if(tabId === 'preview') {
+                    requestAnimationFrame(adjustCanvasScale);
+                }
+                updateQuickScrollVisibility();
+            }, 10);
         }
 
         function updateCanvasElementStyle(key) {
@@ -928,7 +1022,6 @@
         function buildDataCard(config) {
             const { label, key, isTextarea } = config;
             
-            // Replaced custom floating with Google Form Style
             const inputElement = isTextarea 
                 ? `<textarea id="input-data-${key}" class="form-input" rows="3" placeholder="Your answer" oninput="this.style.height = 'auto'; this.style.height = this.scrollHeight + 'px'"></textarea>`
                 : `<input type="text" id="input-data-${key}" class="form-input" placeholder="Your answer" />`;
@@ -1113,8 +1206,12 @@
             renderIcons(dataContainer);
             renderIcons(settingsContainer);
             
-            // NEW DEFAULT: Launch directly into the DATA tab
             switchTab('data');
+            
+            // Attach scroll listener to tabs to update floating scroll visibility dynamically if contents change
+            document.querySelectorAll('.tab-view').forEach(tab => {
+                tab.addEventListener('scroll', updateQuickScrollVisibility, {passive: true});
+            });
         }
 
         // --- Execution ---
